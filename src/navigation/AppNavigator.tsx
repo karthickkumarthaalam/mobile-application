@@ -1,0 +1,44 @@
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+import SplashScreen from "../screens/Splash/SplashScreen";
+import OnboardingScreen from "../screens/Onboarding/OnboardingScreen";
+import TabNavigator from "./TabNavigator";
+import OfflineScreen from "../screens/Offline/OfflineScreen";
+
+const Stack = createNativeStackNavigator();
+
+export default function AppNavigator() {
+    return (
+        <NavigationContainer>
+            <Stack.Navigator
+                initialRouteName="Splash"
+                screenOptions={{
+                    headerShown: false,
+                }}
+            >
+                <Stack.Screen
+                    name="Splash"
+                    component={SplashScreen}
+                />
+
+                <Stack.Screen
+                    name="Offline"
+                    component={OfflineScreen}
+                />
+
+                <Stack.Screen
+                    name="Onboarding"
+                    component={OnboardingScreen}
+                />
+
+                <Stack.Screen
+                    name="Home"
+                    component={TabNavigator}
+                // component={OnboardingScreen}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+}
