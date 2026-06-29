@@ -1,9 +1,13 @@
 import { useFonts } from "expo-font";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import AppNavigator from "./src/navigation/AppNavigator";
-import { AudioProvider } from "./src/audio/AudioProvider";
+import { AudioProvider } from "./src/providers/AudioProvider";
 import { NetworkProvider } from "./src/providers/NetworkProvider";
+import { AuthProvider } from "./src/providers/AuthProvider";
+import AppNavigator from "./src/navigation/AppNavigator";
+import AuthBottomSheet from "./src/components/Auth/AuthBottomSheet";
 
 
 const queryClient = new QueryClient({
@@ -21,6 +25,10 @@ const queryClient = new QueryClient({
 export default function App() {
   const [fontsLoaded] = useFonts({
     InclusiveSans: require("./src/assets/fonts/InclusiveSans-Regular.ttf"),
+    "InclusiveSans-Regular": require("./src/assets/fonts/InclusiveSans-Regular.ttf"),
+    "InclusiveSans-Medium": require("./src/assets/fonts/InclusiveSans-Medium.ttf"),
+    "InclusiveSans-SemiBold": require("./src/assets/fonts/InclusiveSans-SemiBold.ttf"),
+    "InclusiveSans-Bold": require("./src/assets/fonts/InclusiveSans-Bold.ttf"),
   });
 
   if (!fontsLoaded) {
@@ -28,12 +36,19 @@ export default function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <NetworkProvider>
-        <AudioProvider>
-          <AppNavigator />
-        </AudioProvider>
-      </NetworkProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <QueryClientProvider client={queryClient}>
+          <NetworkProvider>
+            <AuthProvider>
+              <AudioProvider>
+                <AppNavigator />
+                <AuthBottomSheet />
+              </AudioProvider>
+            </AuthProvider>
+          </NetworkProvider>
+        </QueryClientProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

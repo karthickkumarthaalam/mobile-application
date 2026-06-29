@@ -2,6 +2,7 @@ import React, {
     createContext,
     ReactNode,
     useCallback,
+    useContext,
     useEffect,
     useMemo,
     useState,
@@ -12,7 +13,20 @@ import {
     useAudioPlayerStatus,
 } from "expo-audio";
 
-import { NowPlaying } from "./audio.types";
+
+interface NowPlaying {
+    id: number;
+    url: string;
+
+    title: string;
+    subtitle?: string;
+    artwork?: string;
+
+    type: "radio" | "podcast";
+
+    isLive?: boolean;
+}
+
 
 export interface AudioContextType {
     isReady: boolean;
@@ -170,3 +184,11 @@ export function AudioProvider({ children }: Props) {
         </AudioContext.Provider>
     );
 }
+
+export const useAudio = () => {
+    const context = useContext(AudioContext);
+    if (!context) {
+        throw new Error('useAudio must be used within an AudioProvider');
+    }
+    return context;
+};

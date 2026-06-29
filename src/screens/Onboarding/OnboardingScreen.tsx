@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import {
     FlatList,
     StyleSheet,
-    Text,
     TouchableOpacity,
     View,
     ViewToken,
@@ -14,33 +13,16 @@ import SecondOnboarding from "./SecondOnboarding";
 import ThirdOnboarding from "./ThirdOnboarding";
 
 import { useDevice } from "../../utils/device";
-import PrimaryButton from "./components/PrimaryButton/PrimaryButton";
+import PrimaryButton from "../../components/Button/PrimaryButton";
+import AppText from "../../components/Text/AppText";
 import { setOnboardingCompleted } from "../../utils/storage";
+import { ArrowRight } from "lucide-react-native";
+import { COLORS } from "../../constants/colors";
 
 const pages = [
-    {
-        id: "1",
-        buttonColor: "#E41E26",
-        buttonTextColor: "#FFFFFF",
-        skipColor: "#FFFFFF",
-        arrowColor: "#FFFFFF"
-    },
-    {
-        id: "2",
-        buttonColor: "#f39e1f",
-        buttonTextColor: "#FFFFFF",
-        skipColor: "#000000",
-        arrowColor: "#FFFFFF",
-
-    },
-    {
-        id: "3",
-        buttonColor: "#67dcff",
-        buttonTextColor: "#000000",
-        skipColor: "#FFFFFF",
-        arrowColor: "#000000",
-
-    }
+    { id: "1" },
+    { id: "2" },
+    { id: "3" },
 ];
 
 export default function OnboardingScreen({ navigation }: any) {
@@ -50,8 +32,6 @@ export default function OnboardingScreen({ navigation }: any) {
     const [currentPage, setCurrentPage] = useState(0);
 
     const flatListRef = useRef<FlatList>(null);
-
-    const page = pages[currentPage];
 
     const viewabilityConfig = {
         viewAreaCoveragePercentThreshold: 50,
@@ -103,17 +83,18 @@ export default function OnboardingScreen({ navigation }: any) {
                     },
                 ]}
             >
-                <Text
+                <AppText
+                    variant="body"
+                    weight="600"
                     style={[
                         styles.skipText,
                         {
-                            color: page.skipColor,
                             fontSize: isTablet ? 20 : 16,
                         },
                     ]}
                 >
                     Skip
-                </Text>
+                </AppText>
             </TouchableOpacity>
 
             {/* Pages */}
@@ -143,10 +124,15 @@ export default function OnboardingScreen({ navigation }: any) {
                             ? "Get Started"
                             : "Next"
                     }
-                    backgroundColor={page.buttonColor}
-                    textColor={page.buttonTextColor}
+                    size="lg"
                     onPress={handleNext}
-                    arrowColor={page.arrowColor}
+                    rightIcon={
+                        <ArrowRight
+                            size={20}
+                            color={COLORS.white}
+                            strokeWidth={2.5}
+                        />
+                    }
                 />
             </View>
         </View>
@@ -156,6 +142,7 @@ export default function OnboardingScreen({ navigation }: any) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: COLORS.background,
     },
 
     skip: {
@@ -171,8 +158,7 @@ const styles = StyleSheet.create({
     },
 
     skipText: {
-        fontFamily: "InclusiveSans",
-        fontWeight: "600",
+        color: COLORS.text,
     },
 
     bottomContainer: {

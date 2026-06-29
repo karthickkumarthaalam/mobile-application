@@ -12,7 +12,7 @@ import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { House, Radio, CalendarDays, Newspaper, CircleUserRound, Play, Pause } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDevice } from "../utils/device";
-import { useAudio } from "../audio/useAudio";
+import { useAudio } from "../providers/AudioProvider";
 
 const ICONS: Record<string, any> = {
     Main: House,

@@ -19,7 +19,7 @@ const SecondOnboarding = () => {
 
     return (
         <LinearGradient
-            colors={["#f1b55a", "#e7be7f", "#d4c7b2"]}
+            colors={["#160C05", "#0A0A0E", "#050505", "#120704"]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.gradient}
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     },
 
     description: {
-        color: "#000",
+        color: "rgba(255,255,255,0.68)",
         fontFamily: "InclusiveSans",
     },
 });

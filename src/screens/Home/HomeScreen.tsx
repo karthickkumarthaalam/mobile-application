@@ -8,7 +8,7 @@ import LiveProgramCard from "./components/LiveProgramCard";
 import UpNextCard from "./components/UpNextCard";
 import { useLiveProgram } from "../../hooks/useLiveProgram";
 import { formatTime } from "../../utils/common";
-import { useAudio } from "../../audio/useAudio";
+import { useAudio } from "../../providers/AudioProvider";
 
 const HomeScreen = () => {
     const { data, isLoading, isError, refetch } = useLiveProgram();

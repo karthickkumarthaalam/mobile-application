@@ -1,15 +1,15 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { Radio } from "lucide-react-native";
+
+import FeatureScreen from "../../components/Layout/FeatureScreen";
 
 export default function PodcastScreen() {
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>Podcast</Text>
-        </View>
+        <FeatureScreen
+            icon={Radio}
+            eyebrow="Listen on demand"
+            title="Podcasts"
+            description="Interviews, conversations and favourite shows—ready whenever you are."
+        />
     );
 }
-
-const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#fff" },
-    text: { fontSize: 24, fontFamily: "InclusiveSans", fontWeight: "600" },
-});
