@@ -2,6 +2,7 @@ import {
   ForgotPasswordRequest,
   LoginRequest,
   RegisterRequest,
+  ResendOTPRequest,
   ResetPasswordRequest,
   VerifyOTPRequest,
 } from "../types/auth";
@@ -14,6 +15,11 @@ export const register = async (payload: RegisterRequest): Promise<any> => {
 
 export const login = async (payload: LoginRequest): Promise<any> => {
   const { data } = await api.post("/members/login", payload);
+  return data;
+};
+
+export const resentOTP = async (payload: ResendOTPRequest): Promise<any> => {
+  const { data } = await api.post("/members/reset-otp", payload);
   return data;
 };
 

@@ -4,10 +4,53 @@ import PrimaryButton from "../Button/PrimaryButton";
 import AppTextInput from "../Input/AppTextInput";
 import { useAuth } from "../../providers/AuthProvider";
 import AuthLayout from "./AuthLayout";
+import { useNotification } from "../../providers/NotificationProvider";
+import { forgotPassword } from "../../api/auth.api";
+import { saveOTPContext } from "../../utils/storage";
 
 export default function ForgotPassword() {
     const { openAuthSheet } = useAuth();
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const { showSuccess, showError } = useNotification();
+
+    const handleForgot = async () => {
+        if (!email.trim()) {
+            showError(
+                "Email Required",
+                "Please enter your email address."
+            );
+            return;
+        }
+
+        try {
+            setLoading(true);
+
+            await forgotPassword({
+                email: email.trim(),
+            });
+
+            await saveOTPContext({
+                email: email.trim(),
+                flow: "RESET_PASSWORD",
+            });
+
+            showSuccess(
+                "Verification Code Sent",
+                "We've sent a verification code to your email address."
+            );
+
+            openAuthSheet("verify-otp");
+        } catch (error) {
+            showError(
+                "Reset Failed",
+                "Please enter the correct email address."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <AuthLayout
@@ -28,7 +71,8 @@ export default function ForgotPassword() {
             <PrimaryButton
                 title="Send verification code"
                 size="lg"
-                onPress={() => openAuthSheet("verify-otp")}
+                loading={loading}
+                onPress={handleForgot}
             />
         </AuthLayout>
     );

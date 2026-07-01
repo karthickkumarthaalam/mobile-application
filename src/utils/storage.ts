@@ -8,7 +8,16 @@ export const STORAGE_KEYS = {
   ACCESS_TOKEN: "ACCESS_TOKEN",
   USERNAME: "USERNAME",
   MEMBER_ID: "MEMBER_ID",
+
+  //Email
+  OTP_CONTEXT: "OTP_CONTEXT",
 };
+
+export type OTPFlow = "REGISTER" | "RESET_PASSWORD";
+export interface OTPContext {
+  email: string;
+  flow: OTPFlow;
+}
 
 /**
  * Onboarding
@@ -62,4 +71,27 @@ export const clearAuthSession = async () => {
 export const isLoggedIn = async () => {
   const token = await AsyncStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
   return !!token;
+};
+
+//OTP EMAIL
+export const saveOTPContext = async (context: OTPContext) => {
+  await AsyncStorage.setItem(STORAGE_KEYS.OTP_CONTEXT, JSON.stringify(context));
+};
+
+export const getOTPContext = async (): Promise<OTPContext | null> => {
+  const value = await AsyncStorage.getItem(STORAGE_KEYS.OTP_CONTEXT);
+
+  if (!value) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+};
+
+export const clearOTPContext = async () => {
+  await AsyncStorage.removeItem(STORAGE_KEYS.OTP_CONTEXT);
 };

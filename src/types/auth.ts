@@ -24,6 +24,10 @@ export interface VerifyOTPRequest {
   otp: string;
 }
 
+export interface ResendOTPRequest {
+  email: string;
+}
+
 export interface ForgotPasswordRequest {
   email?: string;
   phone?: string;

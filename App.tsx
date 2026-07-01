@@ -6,8 +6,10 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { AudioProvider } from "./src/providers/AudioProvider";
 import { NetworkProvider } from "./src/providers/NetworkProvider";
 import { AuthProvider } from "./src/providers/AuthProvider";
+import { NotificationProvider } from "./src/providers/NotificationProvider";
 import AppNavigator from "./src/navigation/AppNavigator";
 import AuthBottomSheet from "./src/components/Auth/AuthBottomSheet";
+import NotificationContainer from "./src/components/Notification/NotificationContainer";
 
 
 const queryClient = new QueryClient({
@@ -40,12 +42,15 @@ export default function App() {
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <NetworkProvider>
-            <AuthProvider>
-              <AudioProvider>
-                <AppNavigator />
-                <AuthBottomSheet />
-              </AudioProvider>
-            </AuthProvider>
+            <NotificationProvider>
+              <AuthProvider>
+                <AudioProvider>
+                  <AppNavigator />
+                  <AuthBottomSheet />
+                  <NotificationContainer />
+                </AudioProvider>
+              </AuthProvider>
+            </NotificationProvider>
           </NetworkProvider>
         </QueryClientProvider>
       </SafeAreaProvider>

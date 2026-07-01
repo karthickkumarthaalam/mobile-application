@@ -8,14 +8,63 @@ import PrimaryButton from "../Button/PrimaryButton";
 import AppTextInput from "../Input/AppTextInput";
 import AppText from "../Text/AppText";
 import AuthLayout from "./AuthLayout";
+import { login } from "../../api/auth.api";
+import { useNotification } from "../../providers/NotificationProvider";
 
 export default function Login() {
-    const { openAuthSheet } = useAuth();
+    const { openAuthSheet, login: saveSession, closeAuthSheet } = useAuth();
+    const { showSuccess, showError } = useNotification();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = () => {
-        console.log({ email, password });
+    const handleLogin = async () => {
+        if (!email.trim()) {
+            showError(
+                "Email Required",
+                "Please enter your email address."
+            );
+            return;
+        }
+
+        if (!password.trim()) {
+            showError(
+                "Password Required",
+                "Please enter your password."
+            );
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+
+            const response = await login({
+                username: email.trim(),
+                password,
+            });
+
+            await saveSession(
+                response.token,
+                response.username,
+                response.memberid
+            );
+
+            showSuccess(
+                "Welcome Back",
+                "You have signed in successfully."
+            );
+            closeAuthSheet();
+
+        } catch (error: unknown) {
+            // console.error(error);
+            showError(
+                "Login Failed",
+                "Invalid email or password."
+            );
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -55,7 +104,12 @@ export default function Login() {
                 </AppText>
             </TouchableOpacity>
 
-            <PrimaryButton title="Sign in" size="lg" onPress={handleLogin} />
+            <PrimaryButton
+                title="Sign in"
+                size="lg"
+                loading={isLoading}
+                onPress={handleLogin}
+            />
 
             <View style={styles.footer}>
                 <AppText color={COLORS.textSecondary}>New to Thaalam?</AppText>
