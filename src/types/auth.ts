@@ -39,3 +39,14 @@ export interface ResetPasswordRequest {
   newPassword: string;
   confirmPassword: string;
 }
+
+export interface UpdateProfileRequest {
+  name: string;
+  gender: string;
+  country: string;
+  state: string;
+  city: string;
+  phone: string;
+  address1: string;
+  address2: string;
+}

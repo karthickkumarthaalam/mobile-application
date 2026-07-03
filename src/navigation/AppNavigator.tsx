@@ -11,6 +11,7 @@ import OnboardingScreen from "../screens/Onboarding/OnboardingScreen";
 import TabNavigator from "./TabNavigator";
 import OfflineScreen from "../screens/Offline/OfflineScreen";
 import { COLORS } from "../constants/colors";
+import EditProfileScreen from "../screens/Profile/EditProfileScreen";
 
 const Stack = createNativeStackNavigator();
 const navigationTheme: Theme = {
@@ -33,6 +34,10 @@ export default function AppNavigator() {
                 initialRouteName="Splash"
                 screenOptions={{
                     headerShown: false,
+                    contentStyle: {
+                        backgroundColor: COLORS.background,
+                    },
+                    animation: "fade",
                 }}
             >
                 <Stack.Screen
@@ -53,6 +58,11 @@ export default function AppNavigator() {
                 <Stack.Screen
                     name="Home"
                     component={TabNavigator}
+                />
+
+                <Stack.Screen
+                    name="EditProfile"
+                    component={EditProfileScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>

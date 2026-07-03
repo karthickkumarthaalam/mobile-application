@@ -58,6 +58,7 @@ const SplashScreen = ({ navigation }: any) => {
             const completed = await isOnboardingCompleted();
 
             if (completed) {
+                // navigation.replace("Onboarding");
                 navigation.replace("Home");
             } else {
                 navigation.replace("Onboarding");

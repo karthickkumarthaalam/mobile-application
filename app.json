@@ -1,20 +1,21 @@
 {
   "expo": {
-    "name": "thaalam",
+    "name": "Thaalam",
     "slug": "thaalam",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/images/image.png",
-    "userInterfaceStyle": "light",
+    "icon": "./src/assets/images/app-icon.png",
+    "userInterfaceStyle": "dark",
     "newArchEnabled": true,
     "splash": {
       "image": "./src/assets/images/logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#0F172A"
     },
     "ios": {
+      "buildNumber": "1",
       "supportsTablet": true,
-      "bundleIdentifier": "com.karthickkumar63826.thaalam",
+      "bundleIdentifier": "ch.thaalam.app",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "UIBackgroundModes": [
@@ -23,13 +24,14 @@
       }
     },
     "android": {
+      "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./src/assets/images/app-icon.png",
+        "backgroundColor": "#0F172A"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.karthickkumar63826.thaalam"
+      "package": "ch.thaalam.app"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"

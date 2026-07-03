@@ -13,10 +13,28 @@ import {
     saveAuthSession,
 } from "../utils/storage";
 
+export interface Member {
+    memberId: string;
+    name: string;
+
+    email: string;
+    phone: string;
+
+    gender: string;
+
+    country: string;
+    state: string;
+    city: string;
+
+    address1: string;
+    address2: string;
+
+    emailVerified: boolean;
+}
+
 export interface AuthSession {
     token: string | null;
-    username: string | null;
-    memberId: string | null;
+    member: Member | null;
 }
 
 export type AuthScreen =
@@ -33,11 +51,11 @@ interface AuthContextType {
 
     login: (
         token: string,
-        username: string,
-        memberId: string
+        member: Member
     ) => Promise<void>;
 
     logout: () => Promise<void>;
+    updateMember: (member: Member) => Promise<void>;
 
     isAuthSheetVisible: boolean;
     authScreen: AuthScreen;
@@ -55,8 +73,7 @@ interface Props {
 export const AuthProvider = ({ children }: Props) => {
     const [session, setSession] = useState<AuthSession>({
         token: null,
-        username: null,
-        memberId: null,
+        member: null,
     });
 
     const [isLoading, setIsLoading] = useState(true);
@@ -85,15 +102,13 @@ export const AuthProvider = ({ children }: Props) => {
     const login = useCallback(
         async (
             token: string,
-            username: string,
-            memberId: string
+            member: Member
         ) => {
-            await saveAuthSession(token, username, memberId);
+            await saveAuthSession(token, member);
 
             setSession({
                 token,
-                username,
-                memberId,
+                member,
             });
         },
         []
@@ -104,10 +119,24 @@ export const AuthProvider = ({ children }: Props) => {
 
         setSession({
             token: null,
-            username: null,
-            memberId: null,
+            member: null
         });
     }, []);
+
+    const updateMember = useCallback(
+        async (member: Member) => {
+
+            await saveAuthSession(
+                session.token!,
+                member,
+            );
+
+            setSession({
+                token: session.token,
+                member,
+            });
+
+        }, [session.token]);
 
     const openAuthSheet = useCallback((screen: AuthScreen) => {
         setAuthScreen(screen);
@@ -126,6 +155,7 @@ export const AuthProvider = ({ children }: Props) => {
 
             login,
             logout,
+            updateMember,
 
             isAuthSheetVisible,
             authScreen,
@@ -138,6 +168,7 @@ export const AuthProvider = ({ children }: Props) => {
             isLoading,
             login,
             logout,
+            updateMember,
             isAuthSheetVisible,
             authScreen,
             openAuthSheet,

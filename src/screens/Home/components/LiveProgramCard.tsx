@@ -74,9 +74,9 @@ const LiveProgramCard = ({
                     <Text style={styles.programName} numberOfLines={2}>
                         {programName}
                     </Text>
-                    {hostName && (
+                    {/* {hostName && (
                         <Text style={styles.hostName}>with {hostName}</Text>
-                    )}
+                    )} */}
                 </View>
 
 

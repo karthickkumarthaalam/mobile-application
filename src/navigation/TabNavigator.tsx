@@ -8,6 +8,8 @@ import NewsScreen from "../screens/News/NewsScreen";
 import PodcastScreen from "../screens/Podcast/PodcastScreen";
 import PackageScreen from "../screens/Package/PackageScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
+import { COLORS } from "../constants/colors";
+
 
 const Tab = createBottomTabNavigator();
 
@@ -19,7 +21,12 @@ export default function TabNavigator() {
             screenOptions={{
                 headerShown: false,
                 animation: "shift",
-                tabBarStyle: { backgroundColor: "transparent" },
+                sceneStyle: {
+                    backgroundColor: COLORS.background,
+                },
+                tabBarStyle: {
+                    backgroundColor: "transparent",
+                },
             }}
         >
 

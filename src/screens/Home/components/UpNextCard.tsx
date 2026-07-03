@@ -19,7 +19,7 @@ const UpNextCard = ({ image, programName, startTime, minutesLeft }: UpNextCardPr
             </View>
 
             <View style={styles.card}>
-                <Image source={{ uri: image }} style={styles.image} />
+                {/* <Image source={{ uri: image }} style={styles.image} /> */}
 
                 <View style={styles.info}>
                     <View style={styles.tagRow}>

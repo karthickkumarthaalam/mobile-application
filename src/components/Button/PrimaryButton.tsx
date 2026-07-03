@@ -18,7 +18,9 @@ type ButtonVariant =
     | "primary"
     | "glass"
     | "danger"
-    | "success";
+    | "success"
+    | "outline"
+    | "ghost";
 
 type ButtonSize =
     | "sm"
@@ -155,6 +157,18 @@ const styles = StyleSheet.create({
 
     danger: {
         backgroundColor: COLORS.error,
+    },
+
+    outline: {
+        borderWidth: 1,
+        borderColor: COLORS.primaryBorder,
+    },
+
+    ghost: {
+        backgroundColor: "transparent",
+        borderWidth: 0,
+        shadowOpacity: 0,
+        elevation: 0,
     },
 
     pressed: {

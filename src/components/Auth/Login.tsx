@@ -46,8 +46,7 @@ export default function Login() {
 
             await saveSession(
                 response.token,
-                response.username,
-                response.memberid
+                response.member
             );
 
             showSuccess(

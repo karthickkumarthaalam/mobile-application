@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAuthSession } from "../utils/storage";
 
 const api = axios.create({
   baseURL: "https://api.thaalam.ch/api",
@@ -10,7 +11,13 @@ const api = axios.create({
 });
 
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    const session = await getAuthSession();
+
+    if (session.token) {
+      config.headers.Authorization = `Bearer ${session.token}`;
+    }
+
     return config;
   },
   (error) => Promise.reject(error),
