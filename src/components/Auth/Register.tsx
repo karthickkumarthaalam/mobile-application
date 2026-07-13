@@ -31,6 +31,7 @@ export default function Register() {
 
     const [address1, setAddress1] = useState("");
     const [address2, setAddress2] = useState("");
+    const [zipCode, setZipCode] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
 
@@ -154,6 +155,7 @@ export default function Register() {
                 password,
                 address1: address1.trim(),
                 address2: address2.trim(),
+                zip_code: zipCode.trim()
             });
 
             await saveOTPContext({
@@ -190,6 +192,15 @@ export default function Register() {
                 autoComplete="name"
                 value={name}
                 onChangeText={setName}
+            />
+
+            <AppTextInput
+                label="Phone Number"
+                placeholder="+41 00 000 00 00"
+                keyboardType="phone-pad"
+                autoComplete="tel"
+                value={phone}
+                onChangeText={setPhone}
             />
 
             <AppSelect
@@ -243,34 +254,6 @@ export default function Register() {
             />
 
             <AppTextInput
-                label="Email Address"
-                placeholder="you@example.com"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                value={email}
-                onChangeText={setEmail}
-            />
-
-            <AppTextInput
-                label="Phone Number"
-                placeholder="+41 00 000 00 00"
-                keyboardType="phone-pad"
-                autoComplete="tel"
-                value={phone}
-                onChangeText={setPhone}
-            />
-
-            <AppTextInput
-                label="Password"
-                placeholder="Create a password"
-                secure
-                autoComplete="new-password"
-                value={password}
-                onChangeText={setPassword}
-            />
-
-            <AppTextInput
                 label="Address Line 1"
                 placeholder="Address Line 1"
                 value={address1}
@@ -282,6 +265,32 @@ export default function Register() {
                 placeholder="Address Line 2"
                 value={address2}
                 onChangeText={setAddress2}
+            />
+
+            <AppTextInput
+                label="Zip Code"
+                placeholder="Zip Code"
+                value={zipCode}
+                onChangeText={setZipCode}
+            />
+
+            <AppTextInput
+                label="Email Address"
+                placeholder="you@example.com"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoComplete="email"
+                value={email}
+                onChangeText={setEmail}
+            />
+
+            <AppTextInput
+                label="Password"
+                placeholder="Create a password"
+                secure
+                autoComplete="new-password"
+                value={password}
+                onChangeText={setPassword}
             />
 
             <PrimaryButton

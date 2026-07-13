@@ -9,7 +9,7 @@ import {
     Animated,
 } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { House, Radio, CalendarDays, Newspaper, CircleUserRound, Play, Pause } from "lucide-react-native";
+import { House, Radio, CalendarDays, Newspaper, CircleUserRound, Play, Pause, Mic } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDevice } from "../utils/device";
 import { useAudio } from "../providers/AudioProvider";
@@ -17,7 +17,8 @@ import { useAudio } from "../providers/AudioProvider";
 const ICONS: Record<string, any> = {
     Main: House,
     Podcast: Radio,
-    Package: CalendarDays,
+    // Package: CalendarDays,
+    Rjs: Mic,
     News: Newspaper,
     Profile: CircleUserRound,
 };
@@ -245,7 +246,7 @@ const styles = StyleSheet.create({
         alignItems: "flex-end",
         height: 64,
         borderRadius: 32,
-        backgroundColor: "rgba(14, 14, 16, 0.6)",
+        backgroundColor: "rgba(14, 14, 16, 0.9)",
         borderWidth: 1,
         borderColor: "rgba(255,255,255,0.07)",
         paddingHorizontal: 12,

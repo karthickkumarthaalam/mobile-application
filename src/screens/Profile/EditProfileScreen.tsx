@@ -42,6 +42,8 @@ export default function EditProfileScreen() {
     const [address1, setAddress1] = useState(member?.address1 ?? "");
     const [address2, setAddress2] = useState(member?.address2 ?? "");
 
+    const [zipCode, setZipCode] = useState(member?.zip_code ?? "");
+
     const [loading, setLoading] = useState(false);
 
     const navigation = useNavigation();
@@ -144,6 +146,7 @@ export default function EditProfileScreen() {
                     phone: phone.trim(),
                     address1: address1.trim(),
                     address2: address2.trim(),
+                    zip_code: zipCode.trim(),
                 },
             );
 
@@ -271,6 +274,12 @@ export default function EditProfileScreen() {
                     label="Address Line 2"
                     value={address2}
                     onChangeText={setAddress2}
+                />
+
+                <AppTextInput
+                    label="Zip Code"
+                    value={zipCode}
+                    onChangeText={setZipCode}
                 />
             </ProfileCard>
 

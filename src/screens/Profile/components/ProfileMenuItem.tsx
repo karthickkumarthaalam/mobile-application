@@ -38,7 +38,7 @@ export default function ProfileMenuItem({
                         color={
                             destructive
                                 ? COLORS.error
-                                : COLORS.primaryBright
+                                : COLORS.primary
                         } />
                 </View>
 
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         width: 36,
         height: 36,
         borderRadius: 18,
-        backgroundColor: COLORS.primarySoft,
+        backgroundColor: "rgba(220,38,38,0.1)",
         justifyContent: "center",
         alignItems: "center",
     },

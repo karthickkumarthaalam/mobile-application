@@ -16,6 +16,7 @@ export interface RegisterRequest {
   password: string;
   address1: string;
   address2: string;
+  zip_code: string;
 }
 
 export interface VerifyOTPRequest {
@@ -49,4 +50,5 @@ export interface UpdateProfileRequest {
   phone: string;
   address1: string;
   address2: string;
+  zip_code: string;
 }

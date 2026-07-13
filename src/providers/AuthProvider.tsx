@@ -29,6 +29,8 @@ export interface Member {
     address1: string;
     address2: string;
 
+    zip_code: string;
+
     emailVerified: boolean;
 }
 

@@ -9,6 +9,7 @@ import PodcastScreen from "../screens/Podcast/PodcastScreen";
 import PackageScreen from "../screens/Package/PackageScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import { COLORS } from "../constants/colors";
+import RJsScreen from "../screens/RJs/RJsScreen";
 
 
 const Tab = createBottomTabNavigator();
@@ -42,9 +43,13 @@ export default function TabNavigator() {
                 name="Main"
                 component={HomeScreen}
             />
-            <Tab.Screen
+            {/* <Tab.Screen
                 name="Package"
                 component={PackageScreen}
+            /> */}
+            <Tab.Screen
+                name="Rjs"
+                component={RJsScreen}
             />
             <Tab.Screen
                 name="Profile"
