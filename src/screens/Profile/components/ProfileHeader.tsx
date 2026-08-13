@@ -63,7 +63,7 @@ export default function ProfileHeader({
 
     return (
         <LinearGradient
-            colors={GRADIENTS.screen}
+            colors={["#000", "#111"]}
             style={[
                 styles.container,
                 {

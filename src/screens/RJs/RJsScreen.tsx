@@ -152,19 +152,6 @@ export default function RJsScreen() {
                     </AppText>
                 </View>
 
-                <View style={styles.pagination}>
-                    {rjs.map((_, index) => (
-                        <View
-                            key={index}
-                            style={[
-                                styles.dot,
-                                activeIndex === index &&
-                                styles.activeDot,
-                            ]}
-                        />
-                    ))}
-                </View>
-
                 <RefreshControl
                     refreshing={isRefetching}
                     onRefresh={refetch}

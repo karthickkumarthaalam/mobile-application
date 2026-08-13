@@ -22,6 +22,8 @@ import Login from "./Login";
 import Register from "./Register";
 import ResetPassword from "./ResetPassword";
 import VerifyOTP from "./VerifyOTP";
+import { Dimensions } from "react-native";
+
 
 export default function AuthBottomSheet() {
     const { height, width } = useWindowDimensions();
@@ -29,7 +31,7 @@ export default function AuthBottomSheet() {
     const { authScreen, isAuthSheetVisible, closeAuthSheet } = useAuth();
     const [isMounted, setIsMounted] = useState(false);
 
-    const sheetHeight = Math.min(height * 0.9, 820);
+    const sheetHeight = Math.min(Dimensions.get("screen").height - insets.top - Math.max(insets.bottom, SPACING.lg), 820);
     const translateY = useRef(new Animated.Value(height)).current;
     const backdropOpacity = useRef(new Animated.Value(0)).current;
 

@@ -37,6 +37,8 @@ export interface ProgramCategory {
   country: string;
   status: string;
   image_url: string;
+  mobile_image_url: string;
+  background_color?: string;
 }
 
 export interface SystemUser {

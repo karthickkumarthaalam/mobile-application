@@ -32,12 +32,15 @@ export interface AudioContextType {
     isReady: boolean;
     isPlaying: boolean;
     isLoading: boolean;
+    position: number;
+    duration: number;
     nowPlaying: NowPlaying | null;
 
     play: (media: NowPlaying) => Promise<void>;
     pause: () => Promise<void>;
     stop: () => Promise<void>;
     toggle: (media: NowPlaying) => Promise<void>;
+    seek: (seconds: number) => Promise<void>;
 }
 
 export const AudioContext = createContext<AudioContextType | null>(null);
@@ -58,6 +61,8 @@ export function AudioProvider({ children }: Props) {
     const isLoading =
         status.isBuffering ||
         false;
+    const position = status.currentTime ?? 0;
+    const duration = status.duration ?? 0;
 
     useEffect(() => {
         const configure = async () => {
@@ -84,10 +89,6 @@ export function AudioProvider({ children }: Props) {
 
                 await player.replace({
                     uri: media.url,
-                    title: media.title,
-                    artist: media.subtitle,
-                    albumTitle: "Thaalam Radio",
-                    artworkUrl: media.artwork,
                 });
 
                 await player.play();
@@ -156,25 +157,39 @@ export function AudioProvider({ children }: Props) {
         [isPlaying, nowPlaying, pause, play, player]
     );
 
+    const seek = useCallback(async (seconds: number) => {
+        try {
+            await player.seekTo(seconds);
+        } catch (e) {
+            console.log(e);
+        }
+    }, [player]);
+
     const value = useMemo(
         () => ({
             isReady: true,
             isPlaying,
             isLoading,
+            position,
+            duration,
             nowPlaying,
             play,
             pause,
             stop,
             toggle,
+            seek,
         }),
         [
             isPlaying,
             isLoading,
+            position,
+            duration,
             nowPlaying,
             play,
             pause,
             stop,
             toggle,
+            seek,
         ]
     );
 

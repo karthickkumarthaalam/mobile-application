@@ -6,9 +6,8 @@ import {
     Info,
     Mail,
     ShieldCheck,
-    Share2,
-    Star,
-    LogOut
+    LogOut,
+    HandHeart
 } from "lucide-react-native";
 import Constants from "expo-constants";
 import { useNavigation } from "@react-navigation/native";
@@ -86,6 +85,14 @@ export default function ProfileScreen() {
 
 
             <ProfileSection title="Support">
+                <ProfileMenuItem
+                    icon={HandHeart}
+                    title="Support Thaalam"
+                    onPress={() => {
+                        // The native donation flow will be connected here.
+                    }}
+                />
+
                 <ProfileMenuItem
                     icon={Info}
                     title="About Us"

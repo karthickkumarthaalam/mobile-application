@@ -1,7 +1,8 @@
 import React from "react";
-import { Image, StyleSheet, Text, View, Platform } from "react-native";
-import { BlurView } from "expo-blur";
+import { StyleSheet, Text, View, Platform } from "react-native";
 import { Clock3 } from "lucide-react-native";
+import { COLORS } from "../../../constants/colors";
+import { RADIUS, SPACING } from "../../../constants/spacing";
 
 interface UpNextCardProps {
     image: string;
@@ -23,7 +24,7 @@ const UpNextCard = ({ image, programName, startTime, minutesLeft }: UpNextCardPr
 
                 <View style={styles.info}>
                     <View style={styles.tagRow}>
-                        <Clock3 size={11} color="rgba(255,255,255,0.35)" />
+                        <Clock3 size={11} color={COLORS.textMuted} />
                         <Text style={styles.tag}>In {minutesLeft} min · {startTime}</Text>
                     </View>
                     <Text numberOfLines={2} style={styles.programName}>
@@ -44,25 +45,25 @@ export default UpNextCard;
 const styles = StyleSheet.create({
     wrapper: {
         marginTop: 28,
-        paddingHorizontal: 20,
+        paddingHorizontal: SPACING.xl,
     },
 
     sectionHeader: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 10,
-        marginBottom: 14,
+        gap: SPACING.sm,
+        marginBottom: SPACING.md,
     },
 
     sectionAccent: {
         width: 3,
         height: 16,
         borderRadius: 2,
-        backgroundColor: "#E41E26",
+        backgroundColor: COLORS.primary,
     },
 
     sectionTitle: {
-        color: "#fff",
+        color: COLORS.text,
         fontSize: 16,
         fontFamily: "InclusiveSans",
         fontWeight: "700",
@@ -71,12 +72,12 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 14,
-        backgroundColor: "rgba(255,255,255,0.05)",
-        borderRadius: 20,
-        padding: 14,
+        gap: SPACING.md,
+        backgroundColor: COLORS.glass,
+        borderRadius: RADIUS.lg,
+        padding: SPACING.md,
         borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.08)",
+        borderColor: COLORS.glassBorder,
         ...Platform.select({
             ios: {
                 shadowColor: "#000",
@@ -107,13 +108,13 @@ const styles = StyleSheet.create({
     },
 
     tag: {
-        color: "rgba(255,255,255,0.35)",
+        color: COLORS.textMuted,
         fontSize: 11,
         fontFamily: "InclusiveSans",
     },
 
     programName: {
-        color: "#fff",
+        color: COLORS.text,
         fontSize: 15,
         fontFamily: "InclusiveSans",
         fontWeight: "700",
@@ -124,13 +125,13 @@ const styles = StyleSheet.create({
         width: 28,
         height: 28,
         borderRadius: 14,
-        backgroundColor: "rgba(255,255,255,0.07)",
+        backgroundColor: COLORS.glassStrong,
         alignItems: "center",
         justifyContent: "center",
     },
 
     arrowText: {
-        color: "rgba(255,255,255,0.4)",
+        color: COLORS.textSecondary,
         fontSize: 18,
         lineHeight: 22,
     },

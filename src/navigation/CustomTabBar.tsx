@@ -7,12 +7,16 @@ import {
     Platform,
     Image,
     Animated,
+    ActivityIndicator,
 } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { LinearGradient } from "expo-linear-gradient";
 import { House, Radio, CalendarDays, Newspaper, CircleUserRound, Play, Pause, Mic } from "lucide-react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDevice } from "../utils/device";
 import { useAudio } from "../providers/AudioProvider";
+import { GRADIENTS } from "../constants/colors";
+import MiniPlayer from "../components/Audio/MiniPlayer";
 
 const ICONS: Record<string, any> = {
     Main: House,
@@ -26,51 +30,27 @@ const ICONS: Record<string, any> = {
 export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
     const insets = useSafeAreaInsets();
     const { isTablet } = useDevice();
-    const { isPlaying, isLoading, nowPlaying, pause, play } = useAudio();
+    const { nowPlaying } = useAudio();
 
-    const isOnHome = state.routes[state.index]?.name === "Main";
-    const hasMedia = nowPlaying !== null && !isOnHome;
+
+    const currentRoute = state.routes[state.index];
+    const showMiniPlayer = currentRoute.name === "Podcast";
+
+    const openNowPlaying = () => {
+        if (nowPlaying?.type === "podcast") {
+            navigation.getParent()?.navigate("PodcastDetails", { id: nowPlaying.id });
+        } else if (nowPlaying?.type === "radio") {
+            navigation.getParent()?.navigate("Home", {
+                screen: "Main",
+            });
+        }
+    };
 
     return (
         <View style={[styles.wrapper, { bottom: Math.max(insets.bottom + 8, 20) }]}>
             {/* Mini Player Bar */}
-            {hasMedia && (
-                <TouchableOpacity
-                    activeOpacity={0.9}
-                    style={styles.miniPlayer}
-                    onPress={() => {
-                        if (isPlaying) {
-                            pause();
-                        } else {
-                            play(nowPlaying);
-                        }
-                    }}
-                >
-                    {nowPlaying.artwork ? (
-                        <Image source={{ uri: nowPlaying.artwork }} style={styles.miniArtwork} />
-                    ) : (
-                        <View style={[styles.miniArtwork, styles.miniArtworkFallback]}>
-                            <Radio size={14} color="rgba(255,255,255,0.5)" />
-                        </View>
-                    )}
-
-                    <View style={styles.miniInfo}>
-                        <View style={styles.miniLiveBadge}>
-                            <View style={styles.miniLiveDot} />
-                            <Text style={styles.miniLiveText}>LIVE</Text>
-                        </View>
-                        <Text style={styles.miniTitle} numberOfLines={1}>{nowPlaying.title}</Text>
-                    </View>
-
-                    <View style={[styles.miniPlayBtn, isPlaying && styles.miniPlayBtnActive]}>
-                        {isLoading
-                            ? <View style={styles.loadingDot} />
-                            : isPlaying
-                                ? <Pause size={14} color="#fff" fill="#fff" />
-                                : <Play size={14} color="#E41E26" fill="#E41E26" />
-                        }
-                    </View>
-                </TouchableOpacity>
+            {nowPlaying && showMiniPlayer && (
+                <MiniPlayer onPress={openNowPlaying} />
             )}
 
             {/* Tab Bar */}
@@ -94,17 +74,24 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
                     if (isHome) {
                         return (
                             <View key={route.key} style={styles.homeWrapper}>
-                                <TouchableOpacity
-                                    activeOpacity={0.85}
-                                    onPress={onPress}
-                                    style={[styles.homeBtn, focused && styles.homeBtnActive]}
+                                <LinearGradient
+                                    colors={focused ? GRADIENTS.primary : ["rgba(255,255,255,0.22)", "rgba(255,255,255,0.05)"]}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                    style={[styles.homeBtnGlow, focused && styles.homeBtnGlowActive]}
                                 >
-                                    <Icon
-                                        size={isTablet ? 28 : 24}
-                                        color="#fff"
-                                        strokeWidth={2.2}
-                                    />
-                                </TouchableOpacity>
+                                    <TouchableOpacity
+                                        activeOpacity={0.9}
+                                        onPress={onPress}
+                                        style={[styles.homeBtn, focused && styles.homeBtnActive]}
+                                    >
+                                        <Icon
+                                            size={isTablet ? 28 : 24}
+                                            color="#fff"
+                                            strokeWidth={2.2}
+                                        />
+                                    </TouchableOpacity>
+                                </LinearGradient>
                                 <Text style={[styles.label, styles.homeLabel, { opacity: focused ? 1 : 0.5 }]}>
                                     Home
                                 </Text>
@@ -172,6 +159,13 @@ const styles = StyleSheet.create({
         }),
     },
 
+    miniContent: {
+        flex: 1,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+    },
+
     miniArtwork: {
         width: 42,
         height: 42,
@@ -215,6 +209,12 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontFamily: "InclusiveSans",
         fontWeight: "700",
+    },
+
+    miniSubtitle: {
+        color: "rgba(255,255,255,0.55)",
+        fontSize: 11,
+        fontFamily: "InclusiveSans",
     },
 
     miniPlayBtn: {
@@ -308,33 +308,61 @@ const styles = StyleSheet.create({
         marginTop: -22,
     },
 
-    homeBtn: {
-        width: 54,
-        height: 54,
-        borderRadius: 27,
-        backgroundColor: "#1a1a1c",
+    homeBtnGlow: {
+        width: 56,
+        height: 56,
+        borderRadius: 33,
+        padding: 2,
         alignItems: "center",
         justifyContent: "center",
-        borderWidth: 1.5,
-        borderColor: "rgba(255,255,255,0.1)",
         ...Platform.select({
             ios: {
                 shadowColor: "#E41E26",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.0,
-                shadowRadius: 12,
+                shadowOffset: { width: 0, height: 10 },
+                shadowOpacity: 0.18,
+                shadowRadius: 18,
             },
-            android: { elevation: 8 },
+            android: {
+                elevation: 10,
+            },
         }),
     },
 
-    homeBtnActive: {
-        backgroundColor: "#E41E26",
-        borderColor: "#E41E26",
+    homeBtnGlowActive: {
         ...Platform.select({
             ios: {
-                shadowOpacity: 0.55,
+                shadowOpacity: 0.48,
+                shadowRadius: 22,
             },
+            android: {
+                elevation: 14,
+            },
+        }),
+    },
+
+    homeBtn: {
+        width: 54,
+        height: 54,
+        borderRadius: 30,
+        backgroundColor: "rgba(19, 19, 23, 0.98)",
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.16)",
+        overflow: "hidden",
+    },
+
+    homeBtnActive: {
+        backgroundColor: "#0F0F14",
+        borderColor: "rgba(255,255,255,0.2)",
+        ...Platform.select({
+            ios: {
+                shadowColor: "#E41E26",
+                shadowOffset: { width: 0, height: 6 },
+                shadowOpacity: 0.6,
+                shadowRadius: 16,
+            },
+            android: { elevation: 12 },
         }),
     },
 

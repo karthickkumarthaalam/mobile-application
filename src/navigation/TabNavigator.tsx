@@ -36,8 +36,8 @@ export default function TabNavigator() {
                 component={PodcastScreen}
             />
             <Tab.Screen
-                name="News"
-                component={NewsScreen}
+                name="Rjs"
+                component={RJsScreen}
             />
             <Tab.Screen
                 name="Main"
@@ -48,8 +48,8 @@ export default function TabNavigator() {
                 component={PackageScreen}
             /> */}
             <Tab.Screen
-                name="Rjs"
-                component={RJsScreen}
+                name="News"
+                component={NewsScreen}
             />
             <Tab.Screen
                 name="Profile"

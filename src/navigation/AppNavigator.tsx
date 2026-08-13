@@ -12,6 +12,7 @@ import TabNavigator from "./TabNavigator";
 import OfflineScreen from "../screens/Offline/OfflineScreen";
 import { COLORS } from "../constants/colors";
 import EditProfileScreen from "../screens/Profile/EditProfileScreen";
+import PodcastDetailsScreen from "../screens/Podcast/PodcastDetailsScreen";
 
 const Stack = createNativeStackNavigator();
 const navigationTheme: Theme = {
@@ -63,6 +64,11 @@ export default function AppNavigator() {
                 <Stack.Screen
                     name="EditProfile"
                     component={EditProfileScreen}
+                />
+
+                <Stack.Screen
+                    name="PodcastDetails"
+                    component={PodcastDetailsScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>

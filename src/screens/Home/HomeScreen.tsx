@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RefreshCw } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import HomeSkeleton from "./components/HomeSkeleton";
 import LiveProgramCard from "./components/LiveProgramCard";
@@ -9,86 +10,108 @@ import UpNextCard from "./components/UpNextCard";
 import { useLiveProgram } from "../../hooks/useLiveProgram";
 import { formatTime } from "../../utils/common";
 import { useAudio } from "../../providers/AudioProvider";
+import { COLORS, GRADIENTS } from "../../constants/colors";
 
 const HomeScreen = () => {
     const { data, isLoading, isError, refetch } = useLiveProgram();
-    const { toggle, isPlaying, isLoading: audioLoading, nowPlaying } = useAudio();
+    const { toggle, stop, isPlaying, isLoading: audioLoading, nowPlaying } = useAudio();
+    const [selectedRadio, setSelectedRadio] = useState<"live" | "classic">("live");
+
+    const liveStreamUrl = "https://thaalam.out.airtime.pro/thaalam_b";
+
+    const banner = data?.current?.program_category?.mobile_image_url || data?.current?.program_category?.image_url;
+    const screenGradient = [
+        data?.current?.program_category?.background_color ?? GRADIENTS.screen[0],
+        GRADIENTS.screen[1],
+        GRADIENTS.screen[2],
+    ] as const;
+    const isClassicRadio = selectedRadio === "classic";
+    const activeProgramName = data?.current.program_category.category.trim() ?? "Thaalam Live";
+    const activeTitle = data?.current.program_category.category ?? "Thaalam Live";
+    const activeSubtitle = data?.current.show_host_name
+        ? data.current.system_users.name
+        : undefined;
+
     if (isLoading) {
-        return (
-            <View style={styles.container}>
-                <HomeSkeleton />
-            </View>
-        );
+        return <HomeSkeleton />;
     }
     if (isError || !data) {
         return (
-            <SafeAreaView style={styles.container}>
-                <View style={styles.errorContainer}>
-                    <Text style={styles.errorTitle}>
-                        Thaalam Radio is temporarily unavailable
-                    </Text>
-
-                    <Text style={styles.errorSub}>
-                        We're having trouble connecting to the live broadcast.
-                        Please check your internet connection and try again in a
-                        moment.
-                    </Text>
-
-                    <TouchableOpacity
-                        style={styles.retryBtn}
-                        onPress={() => refetch()}
-                        activeOpacity={0.8}
-                    >
-                        <RefreshCw size={16} color="#FFFFFF" />
-                        <Text style={styles.retryText}>
-                            Reconnect to Live Radio
+            <LinearGradient colors={screenGradient} style={styles.container}>
+                <SafeAreaView style={styles.safeArea} edges={["top"]}>
+                    <View style={styles.errorContainer}>
+                        <Text style={styles.errorTitle}>
+                            Thaalam Radio is temporarily unavailable
                         </Text>
-                    </TouchableOpacity>
-                </View>
-            </SafeAreaView>
+
+                        <Text style={styles.errorSub}>
+                            We're having trouble connecting to the live broadcast.
+                            Please check your internet connection and try again in a
+                            moment.
+                        </Text>
+
+                        <TouchableOpacity
+                            style={styles.retryBtn}
+                            onPress={() => refetch()}
+                            activeOpacity={0.8}
+                        >
+                            <RefreshCw size={16} color="#FFFFFF" />
+                            <Text style={styles.retryText}>
+                                Reconnect to Live Radio
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </SafeAreaView>
+            </LinearGradient>
         );
     }
     return (
-        <View style={styles.container}>
-            <ScrollView
-                contentContainerStyle={styles.content}
-                showsVerticalScrollIndicator={false}
-            >
-                <LiveProgramCard
-                    banner={data.current.program_category.image_url}
-                    programName={data.current.program_category.category.trim()}
-                    hostName={
-                        data.current.show_host_name
-                            ? data.current.system_users.name
-                            : undefined
-                    }
-                    startTime={data.current.program_category.start_time}
-                    endTime={data.current.program_category.end_time}
-                    minutesLeft={data.minutesLeft}
-                    isPlaying={isPlaying && nowPlaying?.url === "https://thaalam.out.airtime.pro/thaalam_b"}
-                    isLoading={audioLoading}
-                    onListen={() =>
-                        toggle({
-                            id: data.current.id,
-                            url: "https://thaalam.out.airtime.pro/thaalam_b",
-                            title: data.current.program_category.category,
-                            subtitle: data.current.show_host_name
-                                ? data.current.system_users.name
-                                : undefined,
-                            artwork: data.current.program_category.image_url,
-                            type: "radio",
-                        })
-                    }
-                />
+        <LinearGradient colors={screenGradient} style={styles.container}>
+            <SafeAreaView style={styles.safeArea} edges={["top"]}>
+                <ScrollView
+                    contentContainerStyle={styles.content}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <LiveProgramCard
+                        banner={banner}
+                        programName={activeProgramName}
+                        hostName={activeSubtitle}
+                        startTime={data.current.program_category.start_time}
+                        endTime={data.current.program_category.end_time}
+                        minutesLeft={data.minutesLeft}
+                        isPlaying={isPlaying && nowPlaying?.url === liveStreamUrl}
+                        isLoading={audioLoading}
+                        selectedRadio={selectedRadio}
+                        isComingSoon={isClassicRadio}
+                        onSelectLive={() => setSelectedRadio("live")}
+                        onSelectClassic={() => {
+                            void stop();
+                            setSelectedRadio("classic");
+                        }}
+                        onListen={() =>
+                            toggle({
+                                id: data.current.id,
+                                url: liveStreamUrl,
+                                title: activeTitle,
+                                subtitle: activeSubtitle,
+                                artwork: banner,
+                                type: "radio",
+                            })
+                        }
+                    />
 
-                <UpNextCard
-                    image={data.next.program_category.image_url}
-                    programName={data.next.program_category.category.trim()}
-                    startTime={formatTime(data.next.program_category.start_time)}
-                    minutesLeft={data.minutesLeft}
-                />
-            </ScrollView>
-        </View>
+                    {!isClassicRadio && data.minutesLeft <= 30 && (
+                        <UpNextCard
+                            image={data.next.program_category.image_url}
+                            programName={data.next.program_category.category.trim()}
+                            startTime={formatTime(data.next.program_category.start_time)}
+                            minutesLeft={data.minutesLeft}
+                        />
+                    )}
+
+                </ScrollView>
+            </SafeAreaView>
+        </LinearGradient>
     );
 };
 
@@ -97,12 +120,38 @@ export default HomeScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#0A0A0E",
+    },
+
+    safeArea: {
+        flex: 1,
     },
 
     content: {
         paddingBottom: 120,
     },
+
+    glowTop: {
+        position: "absolute",
+        width: 280,
+        height: 280,
+        borderRadius: 140,
+        backgroundColor: COLORS.primary,
+        opacity: 0.08,
+        top: -110,
+        right: -130,
+    },
+
+    glowBottom: {
+        position: "absolute",
+        width: 220,
+        height: 220,
+        borderRadius: 110,
+        backgroundColor: COLORS.primary,
+        opacity: 0.04,
+        top: 300,
+        left: -90,
+    },
+
     errorContainer: {
         flex: 1,
         justifyContent: "center",
@@ -111,7 +160,7 @@ const styles = StyleSheet.create({
     },
 
     errorTitle: {
-        color: "#FFFFFF",
+        color: COLORS.text,
         fontSize: 24,
         fontFamily: "InclusiveSans",
         fontWeight: "700",
@@ -121,7 +170,7 @@ const styles = StyleSheet.create({
 
     errorSub: {
         marginTop: 14,
-        color: "rgba(255,255,255,0.6)",
+        color: COLORS.textSecondary,
         fontSize: 15,
         lineHeight: 24,
         textAlign: "center",
@@ -135,14 +184,14 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         gap: 10,
 
-        backgroundColor: "#E41E26",
+        backgroundColor: COLORS.primary,
 
         paddingHorizontal: 26,
         paddingVertical: 14,
 
         borderRadius: 28,
 
-        shadowColor: "#E41E26",
+        shadowColor: COLORS.primary,
         shadowOpacity: 0.35,
         shadowRadius: 12,
         shadowOffset: {
@@ -153,7 +202,7 @@ const styles = StyleSheet.create({
     },
 
     retryText: {
-        color: "#FFFFFF",
+        color: COLORS.white,
         fontSize: 15,
         fontWeight: "700",
         fontFamily: "InclusiveSans",
