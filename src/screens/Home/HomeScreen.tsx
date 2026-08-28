@@ -118,7 +118,7 @@ const HomeScreen = () => {
                         }
                     />
 
-                    {!isClassicRadio && data.minutesLeft <= 30 && (
+                    {!isClassicRadio && (
                         <UpNextCard
                             image={data.next.program_category.image_url}
                             programName={data.next.program_category.category.trim()}

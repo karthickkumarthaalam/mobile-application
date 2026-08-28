@@ -177,6 +177,6 @@ const createStyles = () => StyleSheet.create({
 
     content: {
         paddingVertical: SPACING.xl,
-        paddingBottom: SPACING.xxxl,
+        paddingBottom: 120,
     },
 });

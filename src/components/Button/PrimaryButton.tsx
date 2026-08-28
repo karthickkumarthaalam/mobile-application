@@ -37,6 +37,7 @@ interface PrimaryButtonProps extends PressableProps {
     fullWidth?: boolean;
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
+    textColor?: string;
 }
 
 const BUTTON_HEIGHT: Record<ButtonSize, number> = {
@@ -60,6 +61,7 @@ export default function PrimaryButton({
     fullWidth = true,
     leftIcon,
     rightIcon,
+    textColor = COLORS.white,
     style,
     ...props
 }: PrimaryButtonProps) {
@@ -99,14 +101,14 @@ export default function PrimaryButton({
             )}
             <View style={styles.content}>
                 {loading ? (
-                    <ActivityIndicator color={COLORS.white} />
+                    <ActivityIndicator color={textColor} />
                 ) : (
                     <>
                         {leftIcon}
                         <AppText
                             variant="body"
                             weight="700"
-                            color={COLORS.white}
+                            color={textColor}
                             style={{ fontSize: FONT_SIZE[size] }}
                         >
                             {title}

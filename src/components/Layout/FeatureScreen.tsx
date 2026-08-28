@@ -28,7 +28,7 @@ export default function FeatureScreen({
     return (
         <LinearGradient colors={GRADIENTS.screen} style={styles.gradient}>
             <SafeAreaView style={styles.safeArea}>
-                <View style={[styles.glow, { backgroundColor: COLORS.primary }]} />
+                <View style={styles.glow} />
                 <View style={styles.content}>
                     <AppText
                         variant="small"
@@ -68,6 +68,8 @@ export default function FeatureScreen({
                         {children}
                     </View>
                 </View>
+                <View style={styles.glowBottom} />
+
             </SafeAreaView>
         </LinearGradient>
     );
@@ -85,6 +87,17 @@ const createStyles = () => StyleSheet.create({
         opacity: 0.075,
         top: -110,
         right: -130,
+    },
+    glowBottom: {
+        position: "absolute",
+        width: 220,
+        height: 220,
+        borderRadius: 110,
+        backgroundColor: COLORS.primary,
+        opacity: 0.05,
+        bottom: -40,
+        left: -40,
+        zIndex: -1,
     },
     content: {
         flex: 1,
