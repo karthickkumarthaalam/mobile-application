@@ -13,6 +13,7 @@ import { COLORS } from "../../../constants/colors";
 import { SPACING, RADIUS } from "../../../constants/spacing";
 
 import { Podcast } from "../../../types/podcast";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 interface PodcastCardProps {
     podcast: Podcast;
@@ -23,6 +24,7 @@ export default function PodcastCard({
     podcast,
     onPress,
 }: PodcastCardProps) {
+    const styles = useThemedStyles(createStyles);
     return (
         <Pressable
             onPress={() => onPress(podcast)}
@@ -64,7 +66,7 @@ export default function PodcastCard({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         flexDirection: "row",
         alignItems: "center",

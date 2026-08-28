@@ -15,8 +15,9 @@ import { House, Radio, CalendarDays, Newspaper, CircleUserRound, Play, Pause, Mi
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useDevice } from "../utils/device";
 import { useAudio } from "../providers/AudioProvider";
-import { GRADIENTS } from "../constants/colors";
+import { COLORS, GRADIENTS } from "../constants/colors";
 import MiniPlayer from "../components/Audio/MiniPlayer";
+import { useTheme } from "../providers/ThemeProvider";
 
 const ICONS: Record<string, any> = {
     Main: House,
@@ -31,6 +32,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
     const insets = useSafeAreaInsets();
     const { isTablet } = useDevice();
     const { nowPlaying } = useAudio();
+    const { isDark } = useTheme();
 
 
     const currentRoute = state.routes[state.index];
@@ -54,7 +56,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
             )}
 
             {/* Tab Bar */}
-            <View style={styles.bar}>
+            <View style={[styles.bar, { backgroundColor: isDark ? "rgba(14, 14, 16, 0.9)" : "rgba(255,255,255,0.94)", borderColor: COLORS.glassBorder }]}>
                 {state.routes.map((route, index) => {
                     const focused = state.index === index;
                     const isHome = route.name === "Main";
@@ -75,7 +77,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
                         return (
                             <View key={route.key} style={styles.homeWrapper}>
                                 <LinearGradient
-                                    colors={focused ? GRADIENTS.primary : ["rgba(255,255,255,0.22)", "rgba(255,255,255,0.05)"]}
+                                    colors={focused ? GRADIENTS.primary : isDark ? ["rgba(255,255,255,0.22)", "rgba(255,255,255,0.05)"] : ["rgba(9,9,11,0.16)", "rgba(9,9,11,0.04)"]}
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 1 }}
                                     style={[styles.homeBtnGlow, focused && styles.homeBtnGlowActive]}
@@ -83,16 +85,16 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
                                     <TouchableOpacity
                                         activeOpacity={0.9}
                                         onPress={onPress}
-                                        style={[styles.homeBtn, focused && styles.homeBtnActive]}
+                                        style={[styles.homeBtn, focused && styles.homeBtnActive, { backgroundColor: isDark ? "#131317" : COLORS.surfaceElevated, borderColor: COLORS.glassBorder }]}
                                     >
                                         <Icon
                                             size={isTablet ? 28 : 24}
-                                            color="#fff"
+                                            color={isDark ? "#fff" : COLORS.text}
                                             strokeWidth={2.2}
                                         />
                                     </TouchableOpacity>
                                 </LinearGradient>
-                                <Text style={[styles.label, styles.homeLabel, { opacity: focused ? 1 : 0.5 }]}>
+                                <Text style={[styles.label, { opacity: focused ? 1 : 0.5, color: COLORS.text }]}>
                                     Home
                                 </Text>
                             </View>
@@ -106,16 +108,16 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
                             style={styles.item}
                             onPress={onPress}
                         >
-                            <View style={[styles.iconWrap, focused && styles.iconWrapFocused]}>
+                            <View style={[styles.iconWrap, focused && styles.iconWrapFocused, focused && { backgroundColor: COLORS.primarySoft }]}>
                                 <Icon
                                     size={isTablet ? 26 : 24}
-                                    color={focused ? "#fff" : "rgba(255,255,255,0.88)"}
+                                    color={focused ? COLORS.primary : COLORS.textSecondary}
                                     strokeWidth={focused ? 2.2 : 1.7}
                                 />
                             </View>
                             <Text style={[
                                 styles.label,
-                                { color: focused ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.85)" },
+                                { color: focused ? COLORS.text : COLORS.textSecondary },
                             ]}>
                                 {route.name}
                             </Text>
@@ -364,9 +366,5 @@ const styles = StyleSheet.create({
             },
             android: { elevation: 12 },
         }),
-    },
-
-    homeLabel: {
-        color: "rgba(255,255,255,0.85)",
     },
 });

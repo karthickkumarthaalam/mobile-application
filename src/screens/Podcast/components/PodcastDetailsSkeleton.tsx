@@ -6,11 +6,13 @@ import { LinearGradient } from "expo-linear-gradient";
 import SkeletonBlock from "../../Home/components/SkeletonBlock";
 import { COLORS, GRADIENTS } from "../../../constants/colors";
 import { RADIUS, SPACING } from "../../../constants/spacing";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const ARTWORK_SIZE = SCREEN_WIDTH - SPACING.xl * 2;
 
 export default function PodcastDetailsSkeleton() {
+    const styles = useThemedStyles(createStyles);
     return (
         <LinearGradient colors={GRADIENTS.screen} style={styles.container}>
             <SafeAreaView style={styles.safeArea} edges={["top"]}>
@@ -63,7 +65,7 @@ export default function PodcastDetailsSkeleton() {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: { flex: 1 },
     safeArea: { flex: 1 },
     content: { paddingBottom: 120 },

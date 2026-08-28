@@ -33,9 +33,12 @@ export default function ProfileCard({
             entering={FadeInDown
                 .delay(delay)
                 .springify()}
-            style={styles.container}
+            style={[
+                styles.container,
+                { backgroundColor: COLORS.surface, borderColor: COLORS.glassBorder, shadowColor: COLORS.black },
+            ]}
         >
-            <View style={styles.header}>
+            <View style={[styles.header, { borderBottomColor: COLORS.glassBorder }]}>
                 <AppText
                     variant="subHeading"
                     weight="700"

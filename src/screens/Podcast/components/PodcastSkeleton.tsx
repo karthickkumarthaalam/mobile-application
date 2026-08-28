@@ -2,8 +2,11 @@ import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import SkeletonBlock from "../../Home/components/SkeletonBlock";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
+import { COLORS } from "../../../constants/colors";
 
 export default function PodcastSkeleton() {
+    const styles = useThemedStyles(createStyles);
     return (
         <ScrollView
             style={styles.container}
@@ -109,10 +112,10 @@ export default function PodcastSkeleton() {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#0A0A0E",
+        backgroundColor: COLORS.background,
     },
 
     content: {
@@ -134,8 +137,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         gap: 14,
-        backgroundColor: "#13131A",
+        backgroundColor: COLORS.surface,
         borderRadius: 18,
+        borderWidth: 1,
+        borderColor: COLORS.glassBorder,
         padding: 14,
     },
 

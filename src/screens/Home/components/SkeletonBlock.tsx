@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import { Animated, StyleSheet, ViewStyle, DimensionValue } from "react-native";
+import { Animated, ViewStyle, DimensionValue } from "react-native";
 
 import { COLORS } from "../../../constants/colors";
+import { useTheme } from "../../../providers/ThemeProvider";
 
 interface Props {
     width: DimensionValue;
@@ -16,18 +17,19 @@ export default function SkeletonBlock({
     borderRadius = 12,
     style,
 }: Props) {
-    const opacity = useRef(new Animated.Value(0.45)).current;
+    const { isDark } = useTheme();
+    const opacity = useRef(new Animated.Value(isDark ? 0.45 : 0.25)).current;
 
     useEffect(() => {
         const animation = Animated.loop(
             Animated.sequence([
                 Animated.timing(opacity, {
-                    toValue: 0.85,
+                    toValue: isDark ? 0.85 : 0.55,
                     duration: 850,
                     useNativeDriver: true,
                 }),
                 Animated.timing(opacity, {
-                    toValue: 0.45,
+                    toValue: isDark ? 0.45 : 0.25,
                     duration: 850,
                     useNativeDriver: true,
                 }),
@@ -36,27 +38,20 @@ export default function SkeletonBlock({
 
         animation.start();
         return () => animation.stop();
-    }, [opacity]);
+    }, [isDark]);
 
     return (
         <Animated.View
             style={[
-                styles.block,
                 {
                     width,
                     height,
                     borderRadius,
                     opacity,
+                    backgroundColor: COLORS.glassStrong,
                 },
                 style,
             ]}
         />
     );
 }
-
-const styles = StyleSheet.create({
-    block: {
-        backgroundColor: COLORS.glassStrong,
-        overflow: "hidden",
-    },
-});

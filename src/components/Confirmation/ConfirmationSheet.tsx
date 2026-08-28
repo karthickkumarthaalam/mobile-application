@@ -13,6 +13,7 @@ import AppText from "../Text/AppText";
 
 import { COLORS } from "../../constants/colors";
 import { RADIUS, SPACING } from "../../constants/spacing";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 interface ConfirmationSheetProps {
     visible: boolean;
@@ -40,6 +41,7 @@ export default function ConfirmationSheet({
     onConfirm,
     onCancel,
 }: ConfirmationSheetProps) {
+    const styles = useThemedStyles(createStyles);
 
     const translateY = useRef(
         new Animated.Value(350)
@@ -187,7 +189,7 @@ export default function ConfirmationSheet({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
 
     root: {
         flex: 1,

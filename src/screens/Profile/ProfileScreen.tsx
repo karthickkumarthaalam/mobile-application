@@ -7,7 +7,8 @@ import {
     Mail,
     ShieldCheck,
     LogOut,
-    HandHeart
+    HandHeart,
+    Moon
 } from "lucide-react-native";
 import Constants from "expo-constants";
 import { useNavigation } from "@react-navigation/native";
@@ -21,9 +22,10 @@ import { COLORS } from "../../constants/colors";
 import { SPACING } from "../../constants/spacing";
 import { useNotification } from "../../providers/NotificationProvider";
 import ConfirmationSheet from "../../components/Confirmation/ConfirmationSheet";
+import { useTheme } from "../../providers/ThemeProvider";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 export default function ProfileScreen() {
-
     const [logoutVisible, setLogoutVisible] = useState(false);
 
     const {
@@ -35,6 +37,8 @@ export default function ProfileScreen() {
 
     const { showSuccess } = useNotification();
     const navigation = useNavigation<any>();
+    const { isDark, toggleTheme } = useTheme();
+    const styles = useThemedStyles(createStyles);
 
 
     const openWebsite = (url: string) => {
@@ -53,7 +57,7 @@ export default function ProfileScreen() {
 
     return (
         <ScrollView
-            style={styles.container}
+            style={[styles.container, { backgroundColor: COLORS.background }]}
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
         >
@@ -63,36 +67,58 @@ export default function ProfileScreen() {
                 email={session?.member?.email}
                 onLogin={() => openAuthSheet("login")}
             />
+            <ProfileSection title="Account">
+                {isAuthenticated ? (
+                    <>
+                        <ProfileMenuItem
+                            icon={CircleUserRound}
+                            title="Edit Profile"
+                            onPress={() =>
+                                navigation.navigate("EditProfile")
+                            }
+                        />
 
-            {isAuthenticated && (
-                <ProfileSection title="Account">
+                        <ProfileMenuItem
+                            icon={LogOut}
+                            title="Logout"
+                            destructive
+                            onPress={() => setLogoutVisible(true)}
+                        />
+                    </>
+                ) : (
                     <ProfileMenuItem
                         icon={CircleUserRound}
-                        title="Edit Profile"
-                        onPress={() =>
-                            navigation.navigate("EditProfile")
-                        }
+                        title="Login"
+                        onPress={() => openAuthSheet("login")}
                     />
-
-                    <ProfileMenuItem
-                        icon={LogOut}
-                        title="Logout"
-                        destructive
-                        onPress={() => setLogoutVisible(true)}
-                    />
-                </ProfileSection>
-            )}
+                )}
+            </ProfileSection>
 
 
-            <ProfileSection title="Support">
+
+            <ProfileSection title="App">
                 <ProfileMenuItem
                     icon={HandHeart}
                     title="Support Thaalam"
                     onPress={() => {
-                        // The native donation flow will be connected here.
+                        navigation.navigate("Donation");
                     }}
                 />
+                <ProfileMenuItem
+                    icon={Moon}
+                    title="Dark mode"
+                    switchValue={isDark}
+                    onSwitchChange={() => void toggleTheme()}
+                />
+                <ProfileMenuItem
+                    icon={Info}
+                    title="Version"
+                    value={Constants.expoConfig?.version ?? "1.0.0"}
+                />
+            </ProfileSection>
 
+
+            <ProfileSection title="Support">
                 <ProfileMenuItem
                     icon={Info}
                     title="About Us"
@@ -129,14 +155,6 @@ export default function ProfileScreen() {
 
             </ProfileSection>
 
-            <ProfileSection title="App">
-
-                <ProfileMenuItem
-                    icon={Info}
-                    title="Version"
-                    value={Constants.expoConfig?.version ?? "1.0.0"}
-                />
-            </ProfileSection>
             <ConfirmationSheet
                 visible={logoutVisible}
                 title="Logout"
@@ -151,7 +169,7 @@ export default function ProfileScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.background,

@@ -143,7 +143,7 @@ export function AudioProvider({ children }: Props) {
                         {
                             title: nowPlaying.title,
                             artist: nowPlaying.subtitle,
-                            artworkUrl: nowPlaying.artwork,
+                            artworkUrl: "https://thaalam.ch/assets/img/logo/thalam-logo.png",
                         },
                         { showSeekForward: false, showSeekBackward: false }
                     );

@@ -5,6 +5,7 @@ import { Heart, Pause, Play, Share2 } from "lucide-react-native";
 import AppText from "../../../components/Text/AppText";
 import { COLORS } from "../../../constants/colors";
 import { SPACING } from "../../../constants/spacing";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 interface PodcastAudioControlsProps {
     duration: string | number;
@@ -29,6 +30,8 @@ export default function PodcastAudioControls({
 }: PodcastAudioControlsProps) {
     const [trackWidth, setTrackWidth] = useState(0);
     const progress = trackDuration > 0 ? Math.min(1, Math.max(0, position / trackDuration)) : 0;
+
+    const styles = useThemedStyles(createStyles);
 
     const handleTrackLayout = (event: LayoutChangeEvent) => setTrackWidth(event.nativeEvent.layout.width);
     const handleSeek = (locationX: number) => {
@@ -67,9 +70,9 @@ export default function PodcastAudioControls({
                     onPress={onPress}
                     style={({ pressed }) => [styles.playButton, (pressed || !hasAudio) && styles.playButtonPressed]}
                 >
-                    {isLoading ? <ActivityIndicator color={COLORS.backgroundSecondary} /> : isPlaying
-                        ? <Pause size={26} color={COLORS.backgroundSecondary} fill={COLORS.backgroundSecondary} />
-                        : <Play size={26} color={COLORS.backgroundSecondary} fill={COLORS.backgroundSecondary} />}
+                    {isLoading ? <ActivityIndicator color={COLORS.controlIcon} /> : isPlaying
+                        ? <Pause size={26} color={COLORS.controlIcon} fill={COLORS.controlIcon} />
+                        : <Play size={26} color={COLORS.controlIcon} fill={COLORS.controlIcon} />}
                 </Pressable>
 
                 <View style={styles.sideControl}>
@@ -80,7 +83,7 @@ export default function PodcastAudioControls({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: { paddingTop: SPACING.xl, paddingHorizontal: SPACING.xl },
     progressTouchTarget: { height: 20, justifyContent: "center" },
     progressTrack: { height: 4, borderRadius: 2, backgroundColor: COLORS.glassStrong },

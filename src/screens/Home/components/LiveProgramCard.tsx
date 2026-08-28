@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
     ActivityIndicator,
+    Animated,
     Dimensions,
     ImageBackground,
     StyleSheet,
@@ -11,15 +12,20 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import {
     ChevronDown,
+    ChevronLeft,
     Heart,
-    MoreHorizontal,
+    MoonStar,
     Pause,
     Play,
     RadioTowerIcon,
     Share2,
+    Sun,
+    SunDim,
+    SunMoon,
 } from "lucide-react-native";
 import { COLORS } from "../../../constants/colors";
 import { RADIUS, SPACING } from "../../../constants/spacing";
+import { useTheme, useThemedStyles } from "../../../providers/ThemeProvider";
 
 const formatSwissTime = (time: string): string => {
     const parts = time.split(":");
@@ -52,7 +58,6 @@ interface LiveProgramCardProps {
     onListen: () => void;
     // Optional chrome — all no-ops if omitted, safe to drop in without wiring them up.
     onBack?: () => void;
-    onOptions?: () => void;
     isFavorite?: boolean;
     onToggleFavorite?: () => void;
     onShare?: () => void;
@@ -74,11 +79,13 @@ const LiveProgramCard = ({
     onSelectClassic,
     onListen,
     onBack,
-    onOptions,
     isFavorite = false,
     onToggleFavorite,
     onShare,
 }: LiveProgramCardProps) => {
+    const styles = useThemedStyles(createStyles);
+    const { isDark, toggleTheme } = useTheme();
+    const themeAnimation = useRef(new Animated.Value(isDark ? 1 : 0)).current;
     const startMinutes = toMinutes(startTime);
     const endMinutes = toMinutes(endTime);
     const programDuration = endMinutes > startMinutes
@@ -88,18 +95,71 @@ const LiveProgramCard = ({
         ? Math.max(0, Math.min(100, ((programDuration - minutesLeft) / programDuration) * 100))
         : 0;
 
+    useEffect(() => {
+        Animated.spring(themeAnimation, {
+            toValue: isDark ? 1 : 0,
+            friction: 7,
+            tension: 80,
+            useNativeDriver: true,
+        }).start();
+    }, [isDark, themeAnimation]);
+
     return (
         <View style={styles.container}>
             <View style={styles.headerRow}>
                 <TouchableOpacity activeOpacity={0.7} onPress={onBack} hitSlop={8}>
-                    <ChevronDown size={20} color={COLORS.textSecondary} />
+                    <ChevronLeft size={20} color={COLORS.textSecondary} />
                 </TouchableOpacity>
                 <View style={styles.brandContainer}>
                     <Text style={styles.brandLabel}>NOW PLAYING FROM</Text>
                     <Text style={styles.brandTitle}>Thaalam Broadcasting</Text>
                 </View>
-                <TouchableOpacity activeOpacity={0.7} onPress={onOptions} hitSlop={8}>
-                    <MoreHorizontal size={18} color={COLORS.textSecondary} />
+                <TouchableOpacity
+                    activeOpacity={0.75}
+                    style={[styles.themeButton]}
+                    onPress={() => void toggleTheme()}
+                    hitSlop={8}
+                    accessibilityRole="button"
+                    accessibilityLabel={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                >
+                    <Animated.View
+                        style={styles.themeIcon}
+                    >
+                        <Animated.View
+                            style={{
+                                position: "absolute",
+                                opacity: themeAnimation.interpolate({
+                                    inputRange: [0, 0.45, 1],
+                                    outputRange: [1, 0, 0],
+                                }),
+                                transform: [{
+                                    scale: themeAnimation.interpolate({
+                                        inputRange: [0, 0.5, 1],
+                                        outputRange: [1, 0.7, 1],
+                                    }),
+                                }],
+                            }}
+                        >
+                            <MoonStar size={24} color={COLORS.black} />
+                        </Animated.View>
+                        <Animated.View
+                            style={{
+                                position: "absolute",
+                                opacity: themeAnimation.interpolate({
+                                    inputRange: [0, 0.55, 1],
+                                    outputRange: [0, 0, 1],
+                                }),
+                                transform: [{
+                                    scale: themeAnimation.interpolate({
+                                        inputRange: [0, 0.5, 1],
+                                        outputRange: [1, 0.7, 1],
+                                    }),
+                                }],
+                            }}
+                        >
+                            <Sun size={24} color={COLORS.white} />
+                        </Animated.View>
+                    </Animated.View>
                 </TouchableOpacity>
             </View>
 
@@ -207,11 +267,11 @@ const LiveProgramCard = ({
                             disabled={isLoading}
                         >
                             {isLoading ? (
-                                <ActivityIndicator size="small" color={COLORS.backgroundSecondary} />
+                                <ActivityIndicator size="small" color={COLORS.controlIcon} />
                             ) : isPlaying ? (
-                                <Pause size={24} color={COLORS.backgroundSecondary} fill={COLORS.backgroundSecondary} />
+                                <Pause size={24} color={COLORS.controlIcon} fill={COLORS.controlIcon} />
                             ) : (
-                                <Play size={24} color={COLORS.backgroundSecondary} fill={COLORS.backgroundSecondary} />
+                                <Play size={24} color={COLORS.controlIcon} fill={COLORS.controlIcon} />
                             )}
                         </TouchableOpacity>
 
@@ -227,7 +287,7 @@ const LiveProgramCard = ({
 
 export default LiveProgramCard;
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         backgroundColor: "transparent",
     },
@@ -298,6 +358,21 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         color: COLORS.text,
         fontFamily: "InclusiveSans",
+    },
+
+    themeButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+
+    themeIcon: {
+        width: 20,
+        height: 20,
+        alignItems: "center",
+        justifyContent: "center",
     },
 
     infoSection: {

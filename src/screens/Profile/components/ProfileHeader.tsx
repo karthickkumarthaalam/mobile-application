@@ -19,6 +19,7 @@ import { COLORS, GRADIENTS } from "../../../constants/colors";
 import { SPACING } from "../../../constants/spacing";
 import { Image as Img } from "react-native";
 import { useDevice } from "../../../utils/device";
+import { useTheme } from "../../../providers/ThemeProvider";
 
 interface ProfileHeaderProps {
     isLoggedIn: boolean;
@@ -36,6 +37,7 @@ export default function ProfileHeader({
 }: ProfileHeaderProps) {
     const blobScale = useSharedValue(1);
     const { isTablet } = useDevice();
+    const { isDark } = useTheme();
 
     useEffect(() => {
         blobScale.value = withRepeat(
@@ -63,7 +65,7 @@ export default function ProfileHeader({
 
     return (
         <LinearGradient
-            colors={["#000", "#111"]}
+            colors={isDark ? ["#000000", "#111111"] : ["#F7F8FA", "#EDEEF1"]}
             style={[
                 styles.container,
                 {
@@ -207,31 +209,6 @@ export default function ProfileHeader({
                 </Animated.View>
             </Animated.View>
 
-            {!isLoggedIn && (
-                <Animated.View
-                    entering={FadeInDown.delay(350)}
-                    style={[
-                        styles.buttonContainer,
-                        {
-                            marginTop: isTablet ? 36 : 28,
-                            maxWidth: isTablet ? 320 : "100%",
-                        },
-                    ]}
-                >
-                    <PrimaryButton
-                        title="Sign In"
-                        variant='glass'
-                        size="lg"
-                        leftIcon={
-                            <LogIn
-                                size={18}
-                                color="#FFF"
-                            />
-                        }
-                        onPress={onLogin}
-                    />
-                </Animated.View>
-            )}
         </LinearGradient>
     );
 }
@@ -282,7 +259,4 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
 
-    buttonContainer: {
-        alignSelf: "flex-start",
-    },
 });

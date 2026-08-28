@@ -7,6 +7,7 @@ import { AudioProvider } from "./src/providers/AudioProvider";
 import { NetworkProvider } from "./src/providers/NetworkProvider";
 import { AuthProvider } from "./src/providers/AuthProvider";
 import { NotificationProvider } from "./src/providers/NotificationProvider";
+import { ThemeProvider } from "./src/providers/ThemeProvider";
 import AppNavigator from "./src/navigation/AppNavigator";
 import AuthBottomSheet from "./src/components/Auth/AuthBottomSheet";
 import NotificationContainer from "./src/components/Notification/NotificationContainer";
@@ -40,19 +41,21 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <QueryClientProvider client={queryClient}>
-          <NetworkProvider>
-            <NotificationProvider>
-              <AuthProvider>
-                <AudioProvider>
-                  <AppNavigator />
-                  <AuthBottomSheet />
-                  <NotificationContainer />
-                </AudioProvider>
-              </AuthProvider>
-            </NotificationProvider>
-          </NetworkProvider>
-        </QueryClientProvider>
+        <ThemeProvider>
+          <QueryClientProvider client={queryClient}>
+            <NetworkProvider>
+              <NotificationProvider>
+                <AuthProvider>
+                  <AudioProvider>
+                    <AppNavigator />
+                    <AuthBottomSheet />
+                    <NotificationContainer />
+                  </AudioProvider>
+                </AuthProvider>
+              </NotificationProvider>
+            </NetworkProvider>
+          </QueryClientProvider>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

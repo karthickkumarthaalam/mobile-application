@@ -13,6 +13,7 @@ import AppText from "../../../components/Text/AppText";
 import { COLORS } from "../../../constants/colors";
 import { RADIUS, SPACING } from "../../../constants/spacing";
 import { RJ } from "../../../types/rj";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 const { width } = Dimensions.get('window');
 
@@ -21,6 +22,7 @@ interface RJCardProps {
 }
 
 export default function RJCard({ rj }: RJCardProps) {
+    const styles = useThemedStyles(createStyles);
 
 
 
@@ -86,67 +88,17 @@ export default function RJCard({ rj }: RJCardProps) {
                     {rj.description ||
                         `${rj.name} is one of Thaalam Radio's beloved voices, bringing energy and passion to every show.`}
                 </AppText>
-
-                {/* Shows Section */}
-                {/* {!!rj.shows.length && (
-                    <View style={styles.showsSection}>
-                        <View style={styles.showsHeader}>
-                            <AppText variant="caption" weight="600" color={COLORS.textSecondary}>
-                                UPCOMING SHOWS
-                            </AppText>
-                            <View style={styles.showsDivider} />
-                        </View>
-
-                        <View style={styles.showsList}>
-                            {rj.shows.slice(0, 2).map((show, index) => (
-                                <View
-                                    key={index}
-                                    style={styles.showCard}
-                                >
-                                    <View style={styles.showIconContainer}>
-                                        <LinearGradient
-                                            colors={["rgba(220,38,38,0.15)", "rgba(220,38,38,0.05)"]}
-                                            style={styles.showIcon}
-                                        >
-                                            <Clock3 size={18} color={COLORS.primary} />
-                                        </LinearGradient>
-                                    </View>
-
-                                    <View style={styles.showInfo}>
-                                        <AppText
-                                            variant="caption"
-                                            weight="700"
-                                            color={COLORS.primary}
-                                            style={styles.showCategory}
-                                        >
-                                            {show.category.toUpperCase()}
-                                        </AppText>
-                                        <AppText
-                                            variant="body"
-                                            weight="600"
-                                            style={styles.showTime}
-                                        >
-                                            {show.startTime.slice(0, 5)} - {show.endTime.slice(0, 5)}
-                                        </AppText>
-                                    </View>
-
-                                    <View style={styles.showIndicator} />
-                                </View>
-                            ))}
-                        </View>
-                    </View>
-                )} */}
             </View>
         </View>
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     card: {
         borderRadius: 28,
         marginBottom: 32,
         backgroundColor: COLORS.surface,
-        borderWidth: 1,
+        borderWidth: 0,
         overflow: "hidden",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 10 },
@@ -160,6 +112,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         // justifyContent: "space-between",
         marginTop: 24,
+        borderRadius: 24,
     },
 
     imageRadius: {

@@ -23,9 +23,11 @@ import Register from "./Register";
 import ResetPassword from "./ResetPassword";
 import VerifyOTP from "./VerifyOTP";
 import { Dimensions } from "react-native";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 
 export default function AuthBottomSheet() {
+    const styles = useThemedStyles(createStyles);
     const { height, width } = useWindowDimensions();
     const insets = useSafeAreaInsets();
     const { authScreen, isAuthSheetVisible, closeAuthSheet } = useAuth();
@@ -171,7 +173,7 @@ export default function AuthBottomSheet() {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     wrapper: {
         flex: 1,
         justifyContent: "flex-end",

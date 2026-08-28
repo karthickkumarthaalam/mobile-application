@@ -13,12 +13,14 @@ import PodcastAudioControls from "./components/PodcastAudioControls";
 import PodcastDetailsHero from "./components/PodcastDetailsHero";
 import PodcastDetailsInfo from "./components/PodcastDetailsInfo";
 import PodcastDetailsSkeleton from "./components/PodcastDetailsSkeleton";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 type PodcastDetailsRouteParams = {
     PodcastDetails: { id: number; };
 };
 
 export default function PodcastDetailsScreen() {
+    const styles = useThemedStyles(createStyles);
     const navigation = useNavigation();
     const route = useRoute<RouteProp<PodcastDetailsRouteParams, "PodcastDetails">>();
     const { data, isLoading, isError } = usePodcast(route.params.id);
@@ -123,7 +125,7 @@ export default function PodcastDetailsScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     gradient: { flex: 1 },
     safeArea: { flex: 1 },
     screen: { flex: 1 },

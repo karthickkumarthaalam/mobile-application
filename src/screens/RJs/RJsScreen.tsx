@@ -18,10 +18,12 @@ import { SPACING } from "../../constants/spacing";
 
 // import { RJ } from "../../types/rj";
 import { useRJs } from "../../hooks/useRjs";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 const { width, height } = Dimensions.get("window");
 
 export default function RJsScreen() {
+    const styles = useThemedStyles(createStyles);
     const { data, isLoading, refetch, isRefetching } = useRJs();
 
     const rjs = useMemo(() => data?.data ?? [], [data]);
@@ -191,7 +193,7 @@ export default function RJsScreen() {
 
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     gradient: {
         flex: 1,
     },

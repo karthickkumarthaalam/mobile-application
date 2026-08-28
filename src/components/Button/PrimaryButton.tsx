@@ -13,6 +13,7 @@ import AppText from "../Text/AppText";
 import { COLORS } from "../../constants/colors";
 import { GRADIENTS } from "../../constants/colors";
 import { RADIUS } from "../../constants/spacing";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 type ButtonVariant =
     | "primary"
@@ -62,6 +63,7 @@ export default function PrimaryButton({
     style,
     ...props
 }: PrimaryButtonProps) {
+    const styles = useThemedStyles(createStyles);
     const buttonStyle: ViewStyle[] = [
         styles.button,
         styles[variant],
@@ -117,7 +119,7 @@ export default function PrimaryButton({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     button: {
         borderRadius: RADIUS.lg,
 

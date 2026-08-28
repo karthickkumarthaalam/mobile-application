@@ -3,6 +3,7 @@ import {
     Text,
     TextProps,
     TextStyle,
+    StyleProp,
     StyleSheet,
 } from "react-native";
 
@@ -28,7 +29,7 @@ interface AppTextProps extends TextProps {
     color?: string;
     align?: TextStyle["textAlign"];
     weight?: "400" | "500" | "600" | "700";
-    style?: TextStyle | TextStyle[];
+    style?: StyleProp<TextStyle>;
 }
 
 const FONT_BY_WEIGHT = {

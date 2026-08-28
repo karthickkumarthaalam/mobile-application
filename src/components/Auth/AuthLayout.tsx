@@ -13,6 +13,7 @@ import { COLORS } from "../../constants/colors";
 import { RADIUS, SPACING } from "../../constants/spacing";
 import { AuthScreen, useAuth } from "../../providers/AuthProvider";
 import AppText from "../Text/AppText";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 interface AuthLayoutProps {
     eyebrow: string;
@@ -29,6 +30,7 @@ export default function AuthLayout({
     children,
     backTo,
 }: AuthLayoutProps) {
+    const styles = useThemedStyles(createStyles);
     const { openAuthSheet } = useAuth();
 
     return (
@@ -83,7 +85,7 @@ export default function AuthLayout({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: { flex: 1 },
     scrollContent: {
         flexGrow: 1,

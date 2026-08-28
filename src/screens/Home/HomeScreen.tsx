@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { BackHandler, Platform, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RefreshCw } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -11,11 +11,27 @@ import { useLiveProgram } from "../../hooks/useLiveProgram";
 import { formatTime } from "../../utils/common";
 import { useAudio } from "../../providers/AudioProvider";
 import { COLORS, GRADIENTS } from "../../constants/colors";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 const HomeScreen = () => {
+    const styles = useThemedStyles(createStyles);
     const { data, isLoading, isError, refetch } = useLiveProgram();
     const { toggle, stop, isPlaying, isLoading: audioLoading, nowPlaying } = useAudio();
     const [selectedRadio, setSelectedRadio] = useState<"live" | "classic">("live");
+
+    const handleCollapse = () => {
+        if (Platform.OS === "android") {
+            BackHandler.exitApp();
+        }
+    };
+
+    const handleShare = () => {
+        Share.share({
+            title: "Thaalam Radio",
+            message: `🎙️ Listen to ${activeProgramName} live on Thaalam Radio!\nhttps://thaalam.ch`,
+            url: "https://thaalam.ch",
+        });
+    };
 
     const liveStreamUrl = "https://thaalam.out.airtime.pro/thaalam_b";
 
@@ -83,6 +99,8 @@ const HomeScreen = () => {
                         isLoading={audioLoading}
                         selectedRadio={selectedRadio}
                         isComingSoon={isClassicRadio}
+                        onBack={handleCollapse}
+                        onShare={handleShare}
                         onSelectLive={() => setSelectedRadio("live")}
                         onSelectClassic={() => {
                             void stop();
@@ -117,7 +135,7 @@ const HomeScreen = () => {
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         flex: 1,
     },

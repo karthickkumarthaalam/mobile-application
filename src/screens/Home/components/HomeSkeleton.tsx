@@ -5,10 +5,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import SkeletonBlock from "./SkeletonBlock";
 import { COLORS, GRADIENTS } from "../../../constants/colors";
 import { RADIUS, SPACING } from "../../../constants/spacing";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 const { width: SCREEN_W } = Dimensions.get("window");
 
 export default function HomeSkeleton() {
+    const styles = useThemedStyles(createStyles);
     return (
         <LinearGradient colors={GRADIENTS.screen} style={styles.container}>
             <SafeAreaView style={styles.safeArea} edges={["top"]}>
@@ -62,7 +64,7 @@ export default function HomeSkeleton() {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         flex: 1,
     },
@@ -129,8 +131,10 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between",
         gap: SPACING.md,
-        backgroundColor: COLORS.glass,
+        backgroundColor: COLORS.surface,
         borderRadius: RADIUS.lg,
+        borderWidth: 1,
+        borderColor: COLORS.glassBorder,
         padding: SPACING.md,
     },
 });

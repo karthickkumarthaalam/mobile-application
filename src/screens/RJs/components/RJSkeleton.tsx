@@ -1,7 +1,9 @@
 import { StyleSheet, View } from "react-native";
 import SkeletonBlock from "../../Home/components/SkeletonBlock";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 export default function RJSkeleton() {
+    const styles = useThemedStyles(createStyles);
     return (
         <View style={styles.card}>
 
@@ -64,7 +66,7 @@ export default function RJSkeleton() {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     card: {
         marginHorizontal: 20,
         marginTop: 20

@@ -4,12 +4,14 @@ import { Pause, Play, Radio } from "lucide-react-native";
 
 import { useAudio } from "../../providers/AudioProvider";
 import { COLORS } from "../../constants/colors";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 interface MiniPlayerProps {
     onPress?: () => void;
 }
 
 export default function MiniPlayer({ onPress }: MiniPlayerProps) {
+    const styles = useThemedStyles(createStyles);
     const { nowPlaying, isPlaying, isLoading, toggle } = useAudio();
 
     if (!nowPlaying) return null;
@@ -46,13 +48,13 @@ export default function MiniPlayer({ onPress }: MiniPlayerProps) {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         width: "100%", flexDirection: "row", alignItems: "center", gap: 12,
-        backgroundColor: "rgba(18,18,20,0.96)", borderWidth: 1, borderColor: COLORS.glassBorder,
+        backgroundColor: COLORS.surface, borderWidth: 1, borderColor: COLORS.glassBorder,
         borderRadius: 20, paddingHorizontal: 12, paddingVertical: 10,
         ...Platform.select({
-            ios: { shadowColor: "#000", shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.45, shadowRadius: 16 },
+            ios: { shadowColor: COLORS.glassShadow, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.45, shadowRadius: 16 },
             android: { elevation: 16 },
         }),
     },

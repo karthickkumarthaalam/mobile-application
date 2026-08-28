@@ -22,7 +22,7 @@ export default function ProfileSection({
             >
                 {title}
             </AppText>
-            <View style={styles.card}>
+            <View style={[styles.card, { backgroundColor: COLORS.surface }]}>
                 {children}
             </View>
         </View>

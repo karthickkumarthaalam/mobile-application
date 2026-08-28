@@ -7,6 +7,7 @@ import { LucideIcon } from "lucide-react-native";
 import { COLORS, GRADIENTS } from "../../constants/colors";
 import { RADIUS, SPACING } from "../../constants/spacing";
 import AppText from "../Text/AppText";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 interface FeatureScreenProps {
     icon: LucideIcon;
@@ -23,10 +24,11 @@ export default function FeatureScreen({
     description,
     children,
 }: FeatureScreenProps) {
+    const styles = useThemedStyles(createStyles);
     return (
         <LinearGradient colors={GRADIENTS.screen} style={styles.gradient}>
             <SafeAreaView style={styles.safeArea}>
-                <View style={styles.glow} />
+                <View style={[styles.glow, { backgroundColor: COLORS.primary }]} />
                 <View style={styles.content}>
                     <AppText
                         variant="small"
@@ -40,9 +42,9 @@ export default function FeatureScreen({
                         {title}
                     </AppText>
 
-                    <View style={styles.card}>
-                        <View style={styles.cardHighlight} />
-                        <View style={styles.icon}>
+                    <View style={[styles.card, { backgroundColor: COLORS.glass, borderColor: COLORS.glassBorder }]}>
+                        <View style={[styles.cardHighlight, { backgroundColor: COLORS.glassHighlight }]} />
+                        <View style={[styles.icon, { backgroundColor: COLORS.primarySoft, borderColor: COLORS.primaryBorder }]}>
                             <Icon
                                 size={28}
                                 color={COLORS.primaryBright}
@@ -71,7 +73,7 @@ export default function FeatureScreen({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     gradient: { flex: 1 },
     safeArea: { flex: 1 },
     glow: {

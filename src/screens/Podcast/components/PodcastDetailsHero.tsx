@@ -6,6 +6,7 @@ import AppText from "../../../components/Text/AppText";
 import { COLORS } from "../../../constants/colors";
 import { RADIUS, SPACING } from "../../../constants/spacing";
 import { Podcast } from "../../../types/podcast";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const ARTWORK_SIZE = SCREEN_WIDTH - SPACING.xl * 2;
@@ -16,6 +17,8 @@ interface PodcastDetailsHeroProps {
 }
 
 export default function PodcastDetailsHero({ podcast, onBack }: PodcastDetailsHeroProps) {
+    const styles = useThemedStyles(createStyles);
+
     return (
         <>
             <View style={styles.header}>
@@ -47,7 +50,7 @@ export default function PodcastDetailsHero({ podcast, onBack }: PodcastDetailsHe
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     header: {
         flexDirection: "row", alignItems: "center", justifyContent: "space-between",
         paddingHorizontal: SPACING.xl, paddingTop: SPACING.lg,

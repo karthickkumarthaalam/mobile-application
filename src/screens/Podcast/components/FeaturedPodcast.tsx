@@ -13,6 +13,7 @@ import { COLORS } from "../../../constants/colors";
 import { SPACING, RADIUS } from "../../../constants/spacing";
 
 import { Podcast } from "../../../types/podcast";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 interface FeaturedPodcastProps {
     podcast: Podcast;
@@ -23,6 +24,7 @@ export default function FeaturedPodcast({
     podcast,
     onPress,
 }: FeaturedPodcastProps) {
+    const styles = useThemedStyles(createStyles);
 
     return (
         <Pressable
@@ -79,7 +81,7 @@ export default function FeaturedPodcast({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         marginTop: SPACING.md,
     },

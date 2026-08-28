@@ -3,6 +3,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     View,
+    Switch,
 } from "react-native";
 import { ChevronRight, LucideIcon } from "lucide-react-native";
 
@@ -16,6 +17,8 @@ interface ProfileMenuItemProps {
     value?: string;
     destructive?: boolean;
     onPress?: () => void;
+    switchValue?: boolean;
+    onSwitchChange?: (value: boolean) => void;
 }
 
 export default function ProfileMenuItem({
@@ -24,15 +27,17 @@ export default function ProfileMenuItem({
     value,
     destructive,
     onPress,
+    switchValue,
+    onSwitchChange,
 }: ProfileMenuItemProps) {
     return (
         <TouchableOpacity
             activeOpacity={0.8}
-            style={styles.container}
+            style={[styles.container, { backgroundColor: COLORS.surface, borderBottomColor: COLORS.glassBorder }]}
             onPress={onPress}
         >
             <View style={styles.left}>
-                <View style={styles.iconContainer}>
+                <View style={[styles.iconContainer, { backgroundColor: COLORS.primarySoft }]}>
                     <Icon
                         size={20}
                         color={
@@ -52,6 +57,15 @@ export default function ProfileMenuItem({
             </View>
 
             <View style={styles.right}>
+                {typeof switchValue === "boolean" ? (
+                    <Switch
+                        value={switchValue}
+                        onValueChange={onSwitchChange}
+                        trackColor={{ false: COLORS.inputBorder, true: COLORS.primary }}
+                        thumbColor={COLORS.white}
+                        accessibilityLabel={`${title} toggle`}
+                    />
+                ) : null}
                 {value ? (
                     <AppText
                         variant="caption"
@@ -61,10 +75,10 @@ export default function ProfileMenuItem({
                     </AppText>
                 ) : null}
 
-                <ChevronRight
+                {!value && typeof switchValue !== "boolean" && <ChevronRight
                     size={18}
                     color={COLORS.textSecondary}
-                />
+                />}
             </View>
         </TouchableOpacity>
     );

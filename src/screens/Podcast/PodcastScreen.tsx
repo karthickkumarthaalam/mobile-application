@@ -19,8 +19,10 @@ import { useInfinitePodcasts } from "../../hooks/usePodcasts";
 import FeaturedPodcast from "./components/FeaturedPodcast";
 import PodcastSkeleton from "./components/PodcastSkeleton";
 import PodcastCard from "./components/PodcastCard";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 export default function PodcastScreen() {
+    const styles = useThemedStyles(createStyles);
     const navigation = useNavigation();
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -166,7 +168,7 @@ export default function PodcastScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     gradient: {
         flex: 1,
     },
@@ -206,7 +208,7 @@ const styles = StyleSheet.create({
         marginTop: SPACING.xl,
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: COLORS.glass,
+        backgroundColor: COLORS.inputBackground,
         borderRadius: RADIUS.lg,
         paddingHorizontal: SPACING.md,
         paddingVertical: SPACING.md,

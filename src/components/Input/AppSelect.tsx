@@ -23,6 +23,7 @@ import AppText from "../Text/AppText";
 import { COLORS } from "../../constants/colors";
 import { FONT_FAMILY } from "../../constants/typography";
 import { RADIUS, SPACING } from "../../constants/spacing";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 interface SelectOption {
     label: string;
@@ -62,6 +63,7 @@ export default function AppSelect({
     searchable = false,
     onChange,
 }: AppSelectProps) {
+    const styles = useThemedStyles(createStyles);
     const [expanded, setExpanded] = useState(false);
     const [search, setSearch] = useState("");
 
@@ -229,7 +231,7 @@ export default function AppSelect({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         marginBottom: SPACING.lg,
     },

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Platform } from "react-native";
 import { Clock3 } from "lucide-react-native";
 import { COLORS } from "../../../constants/colors";
 import { RADIUS, SPACING } from "../../../constants/spacing";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 interface UpNextCardProps {
     image: string;
@@ -12,6 +13,7 @@ interface UpNextCardProps {
 }
 
 const UpNextCard = ({ image, programName, startTime, minutesLeft }: UpNextCardProps) => {
+    const styles = useThemedStyles(createStyles);
     return (
         <View style={styles.wrapper}>
             <View style={styles.sectionHeader}>
@@ -23,13 +25,14 @@ const UpNextCard = ({ image, programName, startTime, minutesLeft }: UpNextCardPr
                 {/* <Image source={{ uri: image }} style={styles.image} /> */}
 
                 <View style={styles.info}>
+
+                    <Text numberOfLines={2} style={styles.programName}>
+                        {programName}
+                    </Text>
                     <View style={styles.tagRow}>
                         <Clock3 size={11} color={COLORS.textMuted} />
                         <Text style={styles.tag}>In {minutesLeft} min · {startTime}</Text>
                     </View>
-                    <Text numberOfLines={2} style={styles.programName}>
-                        {programName}
-                    </Text>
                 </View>
 
                 <View style={styles.arrow}>
@@ -42,7 +45,7 @@ const UpNextCard = ({ image, programName, startTime, minutesLeft }: UpNextCardPr
 
 export default UpNextCard;
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     wrapper: {
         marginTop: 28,
         paddingHorizontal: SPACING.xl,
@@ -71,22 +74,7 @@ const styles = StyleSheet.create({
 
     card: {
         flexDirection: "row",
-        alignItems: "center",
-        gap: SPACING.md,
-        backgroundColor: COLORS.glass,
-        borderRadius: RADIUS.lg,
-        padding: SPACING.md,
-        borderWidth: 1,
-        borderColor: COLORS.glassBorder,
-        ...Platform.select({
-            ios: {
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: 0.25,
-                shadowRadius: 12,
-            },
-            android: { elevation: 6 },
-        }),
+        alignContent: "center"
     },
 
     image: {

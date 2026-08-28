@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import AppText from "../Text/AppText";
 
 import { COLORS } from "../../constants/colors";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 import { SPACING } from "../../constants/spacing";
 
 interface ScreenHeaderProps {
@@ -33,6 +34,7 @@ export default function ScreenHeader({
     onBack,
     rightComponent,
 }: ScreenHeaderProps) {
+    const styles = useThemedStyles(createStyles);
     const navigation = useNavigation();
 
     const handleBack = () => {
@@ -94,7 +96,7 @@ export default function ScreenHeader({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         paddingHorizontal: SPACING.xl,
         paddingTop: SPACING.xl,

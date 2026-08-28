@@ -12,6 +12,7 @@ import AppText from "../Text/AppText";
 import { COLORS } from "../../constants/colors";
 import { FONT_FAMILY } from "../../constants/typography";
 import { RADIUS, SPACING } from "../../constants/spacing";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 interface AppTextInputProps extends TextInputProps {
     label?: string;
@@ -26,6 +27,7 @@ export default function AppTextInput({
     style,
     ...props
 }: AppTextInputProps) {
+    const styles = useThemedStyles(createStyles);
     const [isFocused, setIsFocused] = useState(false);
     const [hidePassword, setHidePassword] = useState(secure);
 
@@ -35,7 +37,7 @@ export default function AppTextInput({
                 <AppText
                     variant="caption"
                     weight="600"
-                    style={styles.label}
+                    style={[styles.label, { color: COLORS.textSecondary }]}
                 >
                     {label}
                 </AppText>
@@ -44,13 +46,16 @@ export default function AppTextInput({
             <View
                 style={[
                     styles.inputContainer,
-                    isFocused && styles.focused,
+                    {
+                        backgroundColor: isFocused ? COLORS.glassStrong : COLORS.inputBackground,
+                        borderColor: isFocused ? COLORS.inputFocus : COLORS.inputBorder,
+                    },
                     error && styles.errorBorder,
                 ]}
             >
                 <TextInput
                     {...props}
-                    style={[styles.input, style]}
+                    style={[styles.input, { color: COLORS.text }, style]}
                     placeholderTextColor={COLORS.textMuted}
                     secureTextEntry={hidePassword}
                     onFocus={() => setIsFocused(true)}
@@ -96,7 +101,7 @@ export default function AppTextInput({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         marginBottom: SPACING.lg,
     },

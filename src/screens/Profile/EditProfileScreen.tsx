@@ -22,8 +22,10 @@ import { SPACING } from "../../constants/spacing";
 import AppText from "../../components/Text/AppText";
 import { useNotification } from "../../providers/NotificationProvider";
 import { updateProfile } from "../../api/auth.api";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 
 export default function EditProfileScreen() {
+    const styles = useThemedStyles(createStyles);
     const { session, updateMember } = useAuth();
 
     const member = session.member;
@@ -295,7 +297,7 @@ export default function EditProfileScreen() {
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: COLORS.background,
