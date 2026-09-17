@@ -48,12 +48,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode; }) {
     void SystemUI.setBackgroundColorAsync(COLORS.background);
   }, [theme]);
 
-  if (!isReady) return null;
-
   return (
     <ThemeContext.Provider value={value}>
       <StatusBar style={theme === "dark" ? "light" : "dark"} backgroundColor={COLORS.background} />
-      {children}
+      {!isReady ? <></> : children}
     </ThemeContext.Provider>
   );
 }

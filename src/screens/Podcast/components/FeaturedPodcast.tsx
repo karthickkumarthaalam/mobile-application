@@ -25,6 +25,7 @@ export default function FeaturedPodcast({
     onPress,
 }: FeaturedPodcastProps) {
     const styles = useThemedStyles(createStyles);
+    const DEFAULT_PODCAST = require("../../../assets/images/podcast/default-podcast.webp");
 
     return (
         <Pressable
@@ -35,13 +36,15 @@ export default function FeaturedPodcast({
             ]}
         >
             <ImageBackground
-                source={{ uri: podcast.image_url }}
+                source={
+                    podcast.image_url
+                        ? { uri: podcast.image_url }
+                        : DEFAULT_PODCAST
+                }
                 imageStyle={styles.image}
                 style={styles.banner}
             >
                 <View style={styles.overlay} />
-
-
             </ImageBackground>
 
             <View style={styles.content}>
@@ -103,7 +106,7 @@ const createStyles = () => StyleSheet.create({
 
     overlay: {
         ...StyleSheet.absoluteFillObject,
-        backgroundColor: "rgba(0,0,0,0.35)",
+        backgroundColor: "rgba(0,0,0,0.1)",
         borderRadius: RADIUS.xl,
     },
 

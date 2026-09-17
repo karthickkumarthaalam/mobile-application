@@ -82,7 +82,7 @@ export const THEMES = {
 export type ThemeColors = (typeof THEMES)[ThemeMode];
 
 // Kept mutable so existing components that read COLORS during render update with the active theme.
-export const COLORS: Record<keyof ThemeColors, string> = { ...THEMES.dark };
+export const COLORS: Record<keyof ThemeColors, string> = { ...THEMES.light };
 
 export const GRADIENTS: {
   screen: [string, string, string];
@@ -90,8 +90,8 @@ export const GRADIENTS: {
   primary: [string, string];
   primaryPressed: [string, string];
 } = {
-  screen: ["#030d14", "#08080B", "#100608"],
-  sheet: ["rgba(25,25,30,0.98)", "rgba(8,8,11,0.99)"],
+  screen: ["#F7F8FA", "#F1F2F4", "#fff7f7"],
+  sheet: ["rgba(255,255,255,0.98)", "rgba(190, 206, 240, 0.99)"],
   primary: [COLORS.primaryBright, COLORS.primaryDark],
   primaryPressed: [COLORS.primary, "#991117"],
 };

@@ -25,6 +25,8 @@ export default function PodcastCard({
     onPress,
 }: PodcastCardProps) {
     const styles = useThemedStyles(createStyles);
+    const DEFAULT_PODCAST = require("../../../assets/images/podcast/default-podcast.webp");
+
     return (
         <Pressable
             onPress={() => onPress(podcast)}
@@ -34,7 +36,7 @@ export default function PodcastCard({
             ]}
         >
             <Image
-                source={{ uri: podcast.image_url }}
+                source={podcast.image_url ? { uri: podcast.image_url } : DEFAULT_PODCAST}
                 style={styles.image}
             />
 

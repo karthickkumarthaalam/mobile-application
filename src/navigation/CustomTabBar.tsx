@@ -56,7 +56,7 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
             )}
 
             {/* Tab Bar */}
-            <View style={[styles.bar, { backgroundColor: isDark ? "rgba(14, 14, 16, 0.9)" : "rgba(255,255,255,0.94)", borderColor: COLORS.glassBorder }]}>
+            <View style={[styles.bar, { backgroundColor: isDark ? "rgba(14, 14, 16)" : "rgba(255,255,255)", borderColor: COLORS.glassBorder }]}>
                 {state.routes.map((route, index) => {
                     const focused = state.index === index;
                     const isHome = route.name === "Main";

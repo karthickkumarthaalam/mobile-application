@@ -17,6 +17,7 @@ interface PodcastAudioControlsProps {
     trackDuration: number;
     onPress: () => void;
     onSeek: (seconds: number) => void;
+    onShare: () => void;
 }
 
 const formatTime = (seconds: number) => {
@@ -26,7 +27,7 @@ const formatTime = (seconds: number) => {
 };
 
 export default function PodcastAudioControls({
-    duration, likes, isPlaying, isLoading, hasAudio, position, trackDuration, onPress, onSeek,
+    duration, likes, isPlaying, isLoading, hasAudio, position, trackDuration, onPress, onSeek, onShare
 }: PodcastAudioControlsProps) {
     const [trackWidth, setTrackWidth] = useState(0);
     const progress = trackDuration > 0 ? Math.min(1, Math.max(0, position / trackDuration)) : 0;
@@ -75,9 +76,9 @@ export default function PodcastAudioControls({
                         : <Play size={26} color={COLORS.controlIcon} fill={COLORS.controlIcon} />}
                 </Pressable>
 
-                <View style={styles.sideControl}>
-                    <Share2 size={21} color={COLORS.textSecondary} />
-                </View>
+                <Pressable accessibilityRole="button" accessibilityLabel="Share" onPress={onShare} hitSlop={8}>
+                    <Share2 size={20} color={COLORS.textSecondary} />
+                </Pressable>
             </View>
         </View>
     );

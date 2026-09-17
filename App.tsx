@@ -1,7 +1,9 @@
 import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useEffect } from "react";
 
 import { AudioProvider } from "./src/providers/AudioProvider";
 import { NetworkProvider } from "./src/providers/NetworkProvider";
@@ -11,6 +13,8 @@ import { ThemeProvider } from "./src/providers/ThemeProvider";
 import AppNavigator from "./src/navigation/AppNavigator";
 import AuthBottomSheet from "./src/components/Auth/AuthBottomSheet";
 import NotificationContainer from "./src/components/Notification/NotificationContainer";
+
+SplashScreen.preventAutoHideAsync();
 
 
 const queryClient = new QueryClient({
@@ -26,7 +30,7 @@ const queryClient = new QueryClient({
 });
 
 export default function App() {
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     InclusiveSans: require("./src/assets/fonts/InclusiveSans-Regular.ttf"),
     "InclusiveSans-Regular": require("./src/assets/fonts/InclusiveSans-Regular.ttf"),
     "InclusiveSans-Medium": require("./src/assets/fonts/InclusiveSans-Medium.ttf"),
@@ -34,12 +38,18 @@ export default function App() {
     "InclusiveSans-Bold": require("./src/assets/fonts/InclusiveSans-Bold.ttf"),
   });
 
-  if (!fontsLoaded) {
-    return null;
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      void SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  if (!fontsLoaded && !fontError) {
+    return <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#000000" }} />;
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "#000000" }}>
       <SafeAreaProvider>
         <ThemeProvider>
           <QueryClientProvider client={queryClient}>

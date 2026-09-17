@@ -28,7 +28,7 @@ const HomeScreen = () => {
     const handleShare = () => {
         Share.share({
             title: "Thaalam Radio",
-            message: `🎙️ Listen to ${activeProgramName} live on Thaalam Radio!\nhttps://thaalam.ch`,
+            message: `Listen to ${activeProgramName} live on Thaalam Radio!\nhttps://thaalam.ch`,
             url: "https://thaalam.ch",
         });
     };

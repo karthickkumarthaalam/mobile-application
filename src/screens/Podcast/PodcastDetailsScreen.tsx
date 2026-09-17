@@ -1,14 +1,15 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useRef } from "react";
 import { PanResponder, ScrollView, StyleSheet, View } from "react-native";
 import { StackActions, useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
+import { Share } from "react-native";
 
 import AppText from "../../components/Text/AppText";
 import { COLORS, GRADIENTS } from "../../constants/colors";
 import { SPACING } from "../../constants/spacing";
 import { usePodcast } from "../../hooks/usePodcast";
-import { useAudio } from "../../providers/AudioProvider";
+import { useAudio, useOnAudioFinish } from "../../providers/AudioProvider";
 import PodcastAudioControls from "./components/PodcastAudioControls";
 import PodcastDetailsHero from "./components/PodcastDetailsHero";
 import PodcastDetailsInfo from "./components/PodcastDetailsInfo";
@@ -35,41 +36,79 @@ export default function PodcastDetailsScreen() {
         duration,
     } = useAudio();
     const previousPodcast = data?.prevPodcast;
-    const previousPodcastId = previousPodcast?.id;
     const nextPodcast = data?.nextPodcast;
-    const nextPodcastId = nextPodcast?.id;
 
-    const swipeResponder = useMemo(() => PanResponder.create({
-        onMoveShouldSetPanResponder: (_, gesture) =>
-            Math.abs(gesture.dx) > 20 && Math.abs(gesture.dx) > Math.abs(gesture.dy),
-        onPanResponderRelease: (_, gesture) => {
-            if (gesture.dx > 70 && nextPodcast) {
-                navigation.dispatch(StackActions.replace("PodcastDetails", { id: nextPodcast.id }));
-                if (nextPodcast.audio_drive_file_link) {
-                    void play({
-                        id: nextPodcast.id,
-                        url: nextPodcast.audio_drive_file_link,
-                        title: nextPodcast.title,
-                        subtitle: nextPodcast.rjname,
-                        artwork: nextPodcast.image_url,
+    const handleShare = useCallback((podcast: NonNullable<typeof data>["podcast"]) => {
+        Share.share({
+            title: podcast.title,
+            message: `🎙️ Listen to "${podcast.title}" on Thaalam Podcasts!\nhttps://thaalam.ch/podcasts/${podcast.slug}`,
+            url: `https://thaalam.ch/podcasts/${podcast.slug}`,
+        });
+    }, []);
+
+    const nextPodcastRef = useRef(nextPodcast);
+    const previousPodcastRef = useRef(previousPodcast);
+    const navigationRef = useRef(navigation);
+    const playRef = useRef(play);
+    const isCurrentPodcastRef = useRef(false);
+    const isAdvancingRef = useRef(false);
+    nextPodcastRef.current = nextPodcast;
+    previousPodcastRef.current = previousPodcast;
+    navigationRef.current = navigation;
+    playRef.current = play;
+    isCurrentPodcastRef.current = nowPlaying?.url === data?.podcast.audio_drive_file_link;
+
+    // Auto-advance to next podcast when current one finishes
+    useOnAudioFinish(() => {
+        if (!isCurrentPodcastRef.current || isAdvancingRef.current) return;
+        const next = nextPodcastRef.current;
+        if (!next) return;
+        const nextAudioUrl = next.audio_drive_file_link;
+        if (!nextAudioUrl) return;
+
+        isAdvancingRef.current = true;
+        void (async () => {
+            await playRef.current({
+                id: next.id,
+                url: nextAudioUrl,
+                title: next.title,
+                subtitle: next.rjname,
+                artwork: next.image_url,
+                type: "podcast",
+            });
+            navigationRef.current.dispatch(StackActions.replace("PodcastDetails", { id: next.id }));
+        })();
+    });
+
+    const swipeResponder = useRef(
+        PanResponder.create({
+            onMoveShouldSetPanResponder: (_, gesture) =>
+                Math.abs(gesture.dx) > 20 && Math.abs(gesture.dx) > Math.abs(gesture.dy),
+            onPanResponderRelease: (_, gesture) => {
+                const target =
+                    gesture.dx < -70 ? previousPodcastRef.current
+                        : gesture.dx > 70 ? nextPodcastRef.current
+                            : null;
+
+                if (!target) return;
+
+                navigationRef.current.dispatch(
+                    StackActions.replace("PodcastDetails", { id: target.id })
+                );
+
+                if (target.audio_drive_file_link) {
+                    void playRef.current({
+                        id: target.id,
+                        url: target.audio_drive_file_link,
+                        title: target.title,
+                        subtitle: target.rjname,
+                        artwork: target.image_url,
                         type: "podcast",
                     });
                 }
-            } else if (gesture.dx < -70 && previousPodcast) {
-                navigation.dispatch(StackActions.replace("PodcastDetails", { id: previousPodcast.id }));
-                if (previousPodcast.audio_drive_file_link) {
-                    void play({
-                        id: previousPodcast.id,
-                        url: previousPodcast.audio_drive_file_link,
-                        title: previousPodcast.title,
-                        subtitle: previousPodcast.rjname,
-                        artwork: previousPodcast.image_url,
-                        type: "podcast",
-                    });
-                }
-            }
-        },
-    }), [navigation, nextPodcast, play, previousPodcast]);
+            },
+        })
+    ).current;
 
     if (isLoading) return <PodcastDetailsSkeleton />;
 
@@ -92,7 +131,10 @@ export default function PodcastDetailsScreen() {
                     <View style={styles.glowBottom} />
 
                     <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-                        <PodcastDetailsHero podcast={podcast} onBack={() => navigation.goBack()} />
+                        <PodcastDetailsHero
+                            podcast={podcast}
+                            onBack={() => navigation.goBack()}
+                        />
 
                         <PodcastAudioControls
                             duration={podcast.duration}
@@ -114,6 +156,7 @@ export default function PodcastDetailsScreen() {
                                 });
                             }}
                             onSeek={(seconds) => isCurrentPodcast && seek(seconds)}
+                            onShare={() => handleShare(podcast)}
                         />
 
                         <PodcastDetailsInfo podcast={podcast} />

@@ -18,6 +18,8 @@ interface PodcastDetailsHeroProps {
 
 export default function PodcastDetailsHero({ podcast, onBack }: PodcastDetailsHeroProps) {
     const styles = useThemedStyles(createStyles);
+    const DEFAULT_PODCAST = require("../../../assets/images/podcast/default-podcast.webp");
+
 
     return (
         <>
@@ -35,7 +37,7 @@ export default function PodcastDetailsHero({ podcast, onBack }: PodcastDetailsHe
             </View>
 
             <View style={styles.artworkWrap}>
-                <ImageBackground source={{ uri: podcast.image_url }} style={styles.artwork} imageStyle={styles.artworkImage}>
+                <ImageBackground source={podcast.image_url ? { uri: podcast.image_url } : DEFAULT_PODCAST} style={styles.artwork} imageStyle={styles.artworkImage}>
                     <View style={styles.artworkShade} />
                 </ImageBackground>
             </View>

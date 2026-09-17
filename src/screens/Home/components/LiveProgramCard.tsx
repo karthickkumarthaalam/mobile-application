@@ -11,21 +11,21 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import {
-    ChevronDown,
     ChevronLeft,
     Heart,
     MoonStar,
     Pause,
     Play,
+    Radio,
     RadioTowerIcon,
     Share2,
     Sun,
-    SunDim,
-    SunMoon,
 } from "lucide-react-native";
+import { Image } from "react-native";
 import { COLORS } from "../../../constants/colors";
 import { RADIUS, SPACING } from "../../../constants/spacing";
 import { useTheme, useThemedStyles } from "../../../providers/ThemeProvider";
+import AppText from "../../../components/Text/AppText";
 
 const formatSwissTime = (time: string): string => {
     const parts = time.split(":");
@@ -190,28 +190,23 @@ const LiveProgramCard = ({
                         style={styles.toggleButton}
                         onPress={onSelectLive}
                     >
-                        <Text
-                            style={[
-                                styles.toggleLabel,
-                                selectedRadio !== "classic" && styles.toggleLabelActive,
-                            ]}
-                        >
-                            Thaalam Live
-                        </Text>
+                        <Radio color={selectedRadio === "classic" ? COLORS.backgroundSecondary : COLORS.primary} />
+                        <AppText > Live</AppText>
                     </TouchableOpacity>
                     <TouchableOpacity
                         activeOpacity={0.7}
                         style={styles.toggleButton}
                         onPress={onSelectClassic}
                     >
-                        <Text
+                        <Image
+                            source={require("../../../assets/images/onboarding/radio.png")}
                             style={[
-                                styles.toggleLabel,
-                                selectedRadio === "classic" && styles.toggleLabelActive,
+                                styles.toggleLogoClassic,
+                                selectedRadio === "classic" ? styles.toggleLogoActive : styles.toggleLogoInactive,
                             ]}
-                        >
-                            Classic Radio
-                        </Text>
+                            resizeMode="contain"
+                        />
+                        <AppText> Classic</AppText>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -510,8 +505,10 @@ const createStyles = () => StyleSheet.create({
         marginTop: 26,
         marginHorizontal: SPACING.xl,
         backgroundColor: COLORS.glass,
-        borderRadius: RADIUS.md,
-        padding: 4,
+        borderRadius: RADIUS.lg,
+        borderWidth: 1,
+        borderColor: COLORS.glassBorder,
+        padding: 2,
     },
 
     toggleRow: {
@@ -525,8 +522,15 @@ const createStyles = () => StyleSheet.create({
         bottom: 2,
         left: 2,
         width: "50%",
-        backgroundColor: COLORS.glassStrong,
-        borderRadius: 11,
+        backgroundColor: COLORS.surface,
+        borderRadius: RADIUS.md,
+        borderWidth: 1,
+        borderColor: COLORS.glassBorder,
+        shadowColor: "#000",
+        shadowOpacity: 0.12,
+        shadowRadius: 6,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 3,
     },
 
     toggleIndicatorClassic: {
@@ -535,19 +539,28 @@ const createStyles = () => StyleSheet.create({
 
     toggleButton: {
         flex: 1,
+        flexDirection: "row",
+        gap: 2,
         alignItems: "center",
         justifyContent: "center",
-        paddingVertical: 9,
+        paddingVertical: 5,
     },
 
-    toggleLabel: {
-        color: COLORS.textMuted,
-        fontSize: 12,
-        fontFamily: "InclusiveSans",
-        fontWeight: "500",
+    toggleLogoThaalam: {
+        width: 90,
+        height: 28,
     },
 
-    toggleLabelActive: {
-        color: COLORS.text,
+    toggleLogoClassic: {
+        width: 36,
+        height: 36,
+    },
+
+    toggleLogoActive: {
+        opacity: 1,
+    },
+
+    toggleLogoInactive: {
+        opacity: 0.3,
     },
 });

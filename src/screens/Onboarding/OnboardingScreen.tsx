@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
         borderColor: "rgba(255,255,255,0.12)",
     },
     skipText: {
-        color: COLORS.text,
+        color: COLORS.background,
     },
     safeArea: {
         flex: 1,
@@ -269,7 +269,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     primaryBtnText: {
-        color: "#FFFFFF",
+        color: COLORS.text,
         fontSize: 18,
         fontWeight: "600",
         fontFamily: "InclusiveSans",
