@@ -19,6 +19,7 @@ import { SPACING } from "../../constants/spacing";
 // import { RJ } from "../../types/rj";
 import { useRJs } from "../../hooks/useRjs";
 import { useThemedStyles } from "../../providers/ThemeProvider";
+import { ScrollView } from "react-native-gesture-handler";
 
 const { width, height } = Dimensions.get("window");
 
@@ -126,66 +127,71 @@ export default function RJsScreen() {
             style={styles.gradient}
         >
             <SafeAreaView style={styles.safeArea}>
-                <View style={styles.glow} />
+                <ScrollView
+                    contentContainerStyle={styles.content}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View style={styles.glow} />
 
-                <View style={styles.header}>
-                    <AppText
-                        variant="small"
-                        weight="700"
-                        color={COLORS.primaryBright}
-                        style={styles.eyebrow}
-                    >
-                        Meet The Voices
-                    </AppText>
+                    <View style={styles.header}>
+                        <AppText
+                            variant="small"
+                            weight="700"
+                            color={COLORS.primaryBright}
+                            style={styles.eyebrow}
+                        >
+                            Meet The Voices
+                        </AppText>
 
-                    <AppText
-                        variant="display"
-                        weight="700"
-                        style={styles.title}
-                    >
-                        Radio Jockeys
-                    </AppText>
+                        <AppText
+                            variant="display"
+                            weight="700"
+                            style={styles.title}
+                        >
+                            Radio Jockeys
+                        </AppText>
 
-                    <AppText
-                        color={COLORS.textSecondary}
-                        style={styles.description}
-                    >
-                        Discover the passionate voices behind Thaalam Radio. Each presenter brings a unique style, energy and personally to every show.
-                    </AppText>
-                </View>
+                        <AppText
+                            color={COLORS.textSecondary}
+                            style={styles.description}
+                        >
+                            Discover the passionate voices behind Thaalam Radio. Each presenter brings a unique style, energy and personally to every show.
+                        </AppText>
+                    </View>
 
-                <RefreshControl
-                    refreshing={isRefetching}
-                    onRefresh={refetch}
-                    tintColor={COLORS.primary}
-                />
-                <Carousel
-                    loop={false}
-                    width={CARD_WIDTH}
-                    height={CARD_HEIGHT}
-                    data={rjs}
-                    pagingEnabled
-                    snapEnabled
-                    mode="parallax"
-                    style={{
-                        width,
-                        alignSelf: "center",
-                    }}
-                    scrollAnimationDuration={700}
-                    modeConfig={{
-                        parallaxScrollingScale: 0.92,
-                        parallaxScrollingOffset: 70,
-                        parallaxAdjacentItemScale: 0.84,
-                    }}
-                    onSnapToItem={(index) => {
-                        setActiveIndex(index);
-                    }}
-                    renderItem={({ item }) => (
-                        <RJCard rj={item} />
-                    )}
-                />
+                    <RefreshControl
+                        refreshing={isRefetching}
+                        onRefresh={refetch}
+                        tintColor={COLORS.primary}
+                    />
+                    <Carousel
+                        loop={false}
+                        width={CARD_WIDTH}
+                        height={CARD_HEIGHT}
+                        data={rjs}
+                        pagingEnabled
+                        snapEnabled
+                        mode="parallax"
+                        style={{
+                            width,
+                            alignSelf: "center",
+                        }}
+                        scrollAnimationDuration={700}
+                        modeConfig={{
+                            parallaxScrollingScale: 0.92,
+                            parallaxScrollingOffset: 70,
+                            parallaxAdjacentItemScale: 0.84,
+                        }}
+                        onSnapToItem={(index) => {
+                            setActiveIndex(index);
+                        }}
+                        renderItem={({ item }) => (
+                            <RJCard rj={item} />
+                        )}
+                    />
 
-                <View style={styles.glowBottom} />
+                    <View style={styles.glowBottom} />
+                </ScrollView>
 
             </SafeAreaView>
         </LinearGradient>
@@ -200,6 +206,10 @@ const createStyles = () => StyleSheet.create({
 
     safeArea: {
         flex: 1,
+    },
+
+    content: {
+        paddingBottom: 120
     },
 
     glow: {

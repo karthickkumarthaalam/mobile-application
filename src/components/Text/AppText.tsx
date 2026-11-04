@@ -28,7 +28,7 @@ interface AppTextProps extends TextProps {
     variant?: Variant;
     color?: string;
     align?: TextStyle["textAlign"];
-    weight?: "400" | "500" | "600" | "700";
+    weight?: "400" | "500" | "600" | "700" | "800";
     style?: StyleProp<TextStyle>;
 }
 
@@ -37,6 +37,7 @@ const FONT_BY_WEIGHT = {
     "500": FONT_FAMILY.medium,
     "600": FONT_FAMILY.semibold,
     "700": FONT_FAMILY.bold,
+    "800": FONT_FAMILY.extrabold
 };
 
 export default function AppText({

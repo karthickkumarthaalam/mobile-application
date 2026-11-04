@@ -17,6 +17,10 @@ import DonationScreen from "../screens/Donation/DonationScreen";
 import DonationSuccessScreen from "../screens/Donation/DonationSuccessScreen";
 import DonationFailureScreen from "../screens/Donation/DonationFailureScreen";
 import PodcastDetailsScreen from "../screens/Podcast/PodcastDetailsScreen";
+import AboutScreen from "../screens/About/AboutScreen";
+import PrivacyPolicyScreen from "../screens/Privacy/PrivacyPolicyScreen";
+import TermsScreen from "../screens/Terms/TermsScreen";
+import ContactScreen from "../screens/Contact/ContactScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -101,6 +105,26 @@ export default function AppNavigator() {
                 <Stack.Screen
                     name="PodcastDetails"
                     component={PodcastDetailsScreen}
+                />
+
+                <Stack.Screen
+                    name="About"
+                    component={AboutScreen}
+                />
+
+                <Stack.Screen
+                    name="PrivacyPolicy"
+                    component={PrivacyPolicyScreen}
+                />
+
+                <Stack.Screen
+                    name="Terms"
+                    component={TermsScreen}
+                />
+
+                <Stack.Screen
+                    name="Contact"
+                    component={ContactScreen}
                 />
             </Stack.Navigator>
         </NavigationContainer>

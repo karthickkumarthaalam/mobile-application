@@ -1,47 +1,51 @@
-import { ReactNode } from "react";
+import { ReactNode, Children, cloneElement, isValidElement } from "react";
 import { StyleSheet, View } from "react-native";
 import AppText from "../../../components/Text/AppText";
 import { COLORS } from "../../../constants/colors";
-import { SPACING } from "../../../constants/spacing";
+import { RADIUS, SPACING } from "../../../constants/spacing";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 interface ProfileSectionProps {
     title: string;
     children: ReactNode;
 }
 
-export default function ProfileSection({
-    title,
-    children
-}: ProfileSectionProps) {
+export default function ProfileSection({ title, children }: ProfileSectionProps) {
+    const styles = useThemedStyles(createStyles);
+
+    const items = Children.toArray(children).filter(isValidElement);
+
     return (
         <View style={styles.container}>
-            <AppText
-                weight="700"
-                color={COLORS.textSecondary}
-                style={styles.title}
-            >
-                {title}
+            <AppText variant="caption" weight="700" style={styles.title}>
+                {title.toUpperCase()}
             </AppText>
-            <View style={[styles.card, { backgroundColor: COLORS.surface }]}>
-                {children}
+            <View style={styles.card}>
+                {items.map((child, index) =>
+                    cloneElement(child as React.ReactElement<any>, { isFirst: index === 0 })
+                )}
             </View>
         </View>
     );
 }
 
-const styles = StyleSheet.create({
-
+const createStyles = () => StyleSheet.create({
     container: {
-        marginBottom: SPACING.xl
+        marginBottom: SPACING.xl,
+        paddingHorizontal: SPACING.lg,
     },
     title: {
         marginBottom: SPACING.sm,
-        paddingHorizontal: SPACING.lg,
+        paddingHorizontal: SPACING.xs,
+        color: COLORS.textMuted,
+        letterSpacing: 0.8,
+        fontSize: 11,
     },
     card: {
         backgroundColor: COLORS.surface,
-        borderRadius: 18,
+        borderRadius: RADIUS.xl,
+        borderWidth: 1,
+        borderColor: COLORS.glassBorder,
         overflow: "hidden",
-        marginHorizontal: SPACING.lg,
     },
 });

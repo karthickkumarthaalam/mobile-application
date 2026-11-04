@@ -10,6 +10,7 @@ import { ChevronRight, LucideIcon } from "lucide-react-native";
 import AppText from "../../../components/Text/AppText";
 import { COLORS } from "../../../constants/colors";
 import { SPACING } from "../../../constants/spacing";
+import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 interface ProfileMenuItemProps {
     icon: LucideIcon;
@@ -19,6 +20,7 @@ interface ProfileMenuItemProps {
     onPress?: () => void;
     switchValue?: boolean;
     onSwitchChange?: (value: boolean) => void;
+    isFirst?: boolean;
 }
 
 export default function ProfileMenuItem({
@@ -29,15 +31,17 @@ export default function ProfileMenuItem({
     onPress,
     switchValue,
     onSwitchChange,
+    isFirst = false,
 }: ProfileMenuItemProps) {
+    const styles = useThemedStyles(createStyles);
     return (
         <TouchableOpacity
             activeOpacity={0.8}
-            style={[styles.container, { backgroundColor: COLORS.surface, borderBottomColor: COLORS.glassBorder }]}
+            style={[styles.container, isFirst && styles.containerFirst]}
             onPress={onPress}
         >
             <View style={styles.left}>
-                <View style={[styles.iconContainer, { backgroundColor: COLORS.primarySoft }]}>
+                <View >
                     <Icon
                         size={20}
                         color={
@@ -47,10 +51,10 @@ export default function ProfileMenuItem({
                         } />
                 </View>
 
-                <AppText weight="500" color={
+                <AppText weight="600" color={
                     destructive
                         ? COLORS.error
-                        : COLORS.textMuted
+                        : COLORS.textSecondary
                 }>
                     {title}
                 </AppText>
@@ -84,39 +88,29 @@ export default function ProfileMenuItem({
     );
 }
 
-const styles = StyleSheet.create({
+const createStyles = () => StyleSheet.create({
     container: {
-        minHeight: 58,
+        minHeight: 56,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-
         paddingHorizontal: SPACING.lg,
         backgroundColor: COLORS.surface,
-
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: COLORS.glassBorder,
+        borderTopWidth: StyleSheet.hairlineWidth,
+        borderTopColor: COLORS.glassBorder,
     },
-
+    containerFirst: {
+        borderTopWidth: 0,
+    },
     left: {
         flexDirection: "row",
         alignItems: "center",
         gap: SPACING.md,
         flex: 1,
     },
-
     right: {
         flexDirection: "row",
         alignItems: "center",
         gap: SPACING.sm,
-    },
-
-    iconContainer: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        backgroundColor: "rgba(220,38,38,0.1)",
-        justifyContent: "center",
-        alignItems: "center",
     },
 });

@@ -112,8 +112,16 @@ const LiveProgramCard = ({
                 </TouchableOpacity>
                 <View style={styles.brandContainer}>
                     <Text style={styles.brandLabel}>NOW PLAYING FROM</Text>
-                    <Text style={styles.brandTitle}>Thaalam Broadcasting</Text>
+                    <AppText
+                        variant="heading"
+                        color={COLORS.text}
+                        weight="700"
+                        style={styles.brandTitle}
+                    >
+                        Thaalam Broadcasting
+                    </AppText>
                 </View>
+
                 <TouchableOpacity
                     activeOpacity={0.75}
                     style={[styles.themeButton]}
@@ -223,10 +231,21 @@ const LiveProgramCard = ({
             ) : (
                 <>
                     <View style={styles.infoSection}>
-                        <Text style={styles.programName} numberOfLines={2}>
+                        <AppText
+                            variant="title"
+                            weight="700"
+                            color={COLORS.text}
+                            style={styles.programName}
+                        >
                             {programName}
-                        </Text>
-                        {hostName ? <Text style={styles.hostName}>{hostName}</Text> : null}
+                        </AppText>
+                        {/* {hostName ? <AppText
+                            variant="subHeading"
+                            color={COLORS.textMuted}
+                            style={styles.hostName}
+                        >{hostName}
+                        </AppText>
+                            : null} */}
                     </View>
 
                     <View style={styles.scrubberSection}>
@@ -350,9 +369,6 @@ const createStyles = () => StyleSheet.create({
 
     brandTitle: {
         fontSize: 24,
-        fontWeight: "700",
-        color: COLORS.text,
-        fontFamily: "InclusiveSans",
     },
 
     themeButton: {
@@ -377,17 +393,14 @@ const createStyles = () => StyleSheet.create({
     },
 
     programName: {
-        color: COLORS.text,
         fontSize: 21,
         fontFamily: "InclusiveSans",
-        fontWeight: "800",
         lineHeight: 26,
         textAlign: "center",
         marginBottom: 6,
     },
 
     hostName: {
-        color: COLORS.textMuted,
         fontSize: 13,
         fontFamily: "InclusiveSans",
     },

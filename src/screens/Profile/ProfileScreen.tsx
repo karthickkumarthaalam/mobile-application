@@ -57,7 +57,7 @@ export default function ProfileScreen() {
 
     return (
         <ScrollView
-            style={[styles.container, { backgroundColor: COLORS.background }]}
+            style={styles.container}
             contentContainerStyle={styles.content}
             showsVerticalScrollIndicator={false}
         >
@@ -122,17 +122,13 @@ export default function ProfileScreen() {
                 <ProfileMenuItem
                     icon={Info}
                     title="About Us"
-                    onPress={() =>
-                        openWebsite("https://thaalam.ch/about-us")
-                    }
+                    onPress={() => navigation.navigate("About")}
                 />
 
                 <ProfileMenuItem
                     icon={Mail}
                     title="Contact Us"
-                    onPress={() =>
-                        openWebsite("https://thaalam.ch/contact-us")
-                    }
+                    onPress={() => navigation.navigate("Contact")}
                 />
             </ProfileSection>
 
@@ -140,17 +136,13 @@ export default function ProfileScreen() {
                 <ProfileMenuItem
                     icon={ShieldCheck}
                     title="Privacy Policy"
-                    onPress={() =>
-                        openWebsite("https://thaalam.ch/privacy-policy")
-                    }
+                    onPress={() => navigation.navigate("PrivacyPolicy")}
                 />
 
                 <ProfileMenuItem
                     icon={FileText}
                     title="Terms & Conditions"
-                    onPress={() =>
-                        openWebsite("https://thaalam.ch/terms-conditions")
-                    }
+                    onPress={() => navigation.navigate("Terms")}
                 />
 
             </ProfileSection>
