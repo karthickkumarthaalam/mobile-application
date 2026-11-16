@@ -16,8 +16,6 @@ export default function PodcastDetailsSkeleton() {
     return (
         <LinearGradient colors={GRADIENTS.screen} style={styles.container}>
             <SafeAreaView style={styles.safeArea} edges={["top"]}>
-                <View style={styles.glowTop} />
-                <View style={styles.glowBottom} />
 
                 <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
                     <View style={styles.header}>

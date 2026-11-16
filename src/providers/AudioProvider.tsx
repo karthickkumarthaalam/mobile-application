@@ -123,8 +123,6 @@ export function AudioProvider({ children }: Props) {
                         DEFAULT_ARTWORK,
                 };
 
-                console.log("PODCAST METADATA:", metadata);
-
                 // 1. Load the podcast
                 player.replace({
                     uri: media.url,

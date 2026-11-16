@@ -12,6 +12,7 @@ import AppText from "../../components/Text/AppText";
 import { COLORS, GRADIENTS } from "../../constants/colors";
 import { SPACING, RADIUS } from "../../constants/spacing";
 import { useThemedStyles } from "../../providers/ThemeProvider";
+import ScreenHeader from "../../components/Layout/ScreenHeader";
 
 const SECTIONS = [
     {
@@ -74,13 +75,7 @@ export default function TermsScreen() {
         <LinearGradient colors={GRADIENTS.screen} style={styles.gradient}>
             <SafeAreaView style={styles.safeArea} edges={["top"]}>
 
-                <View style={styles.header}>
-                    <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
-                        <ChevronLeft size={22} color={COLORS.text} strokeWidth={2} />
-                    </TouchableOpacity>
-
-                </View>
-
+                <ScreenHeader title="Terms & Conditions" />
                 <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
                     {/* Hero */}
@@ -91,7 +86,7 @@ export default function TermsScreen() {
                         <AppText variant="heading" weight="700" align="center" style={styles.heroTitle}>
                             Terms & Conditions
                         </AppText>
-                        <AppText variant="body" align="center" color={COLORS.textSecondary} style={styles.heroSub}>
+                        <AppText variant="caption" align="center" color={COLORS.primaryText} style={styles.heroSub}>
                             Please read these terms carefully before using Thaalam Radio Station's services. By using our platform, you agree to be bound by the following conditions.
                         </AppText>
                     </View>
@@ -105,7 +100,7 @@ export default function TermsScreen() {
                                     {title}
                                 </AppText>
                             </View>
-                            <AppText variant="body" color={COLORS.textSecondary} style={styles.sectionBody}>
+                            <AppText variant="caption" color={COLORS.primaryText} style={styles.sectionBody}>
                                 {body}
                             </AppText>
                         </View>
@@ -179,7 +174,7 @@ const createStyles = () => StyleSheet.create({
     },
 
     sectionCard: {
-        backgroundColor: COLORS.surface,
+        backgroundColor: COLORS.backgroundSecondary,
         borderRadius: RADIUS.lg,
         borderWidth: 1,
         borderColor: COLORS.glassBorder,

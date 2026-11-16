@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
     StyleSheet,
@@ -19,11 +20,8 @@ import { SPACING } from "../../constants/spacing";
 interface ScreenHeaderProps {
     title: string;
     subtitle?: string;
-
     icon?: LucideIcon;
-
     onBack?: () => void;
-
     rightComponent?: React.ReactNode;
 }
 
@@ -43,113 +41,141 @@ export default function ScreenHeader({
             return;
         }
 
-        navigation.goBack();
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
     };
 
     return (
         <View style={styles.container}>
-            <View style={styles.topRow}>
+            <View style={styles.headerRow}>
+                {/* Back Button */}
                 <TouchableOpacity
-                    activeOpacity={0.7}
+                    activeOpacity={0.65}
                     style={styles.backButton}
                     onPress={handleBack}
+                    accessibilityRole="button"
+                    accessibilityLabel="Go back"
+                    hitSlop={8}
                 >
                     <ArrowLeft
-                        size={22}
+                        size={20}
                         color={COLORS.text}
+                        strokeWidth={2}
                     />
                 </TouchableOpacity>
 
-                {rightComponent ?? (
-                    <View style={styles.placeholder} />
+                {/* Heading */}
+                <View style={styles.content}>
+                    <View style={styles.titleRow}>
+                        {Icon && (
+                            <Icon
+                                size={17}
+                                color={COLORS.primary}
+                                strokeWidth={2.2}
+                            />
+                        )}
+
+                        <AppText
+                            variant="subHeading"
+                            weight="700"
+                            style={styles.title}
+                        >
+                            {title}
+                        </AppText>
+                    </View>
+
+                    {!!subtitle && (
+                        <AppText
+                            variant="caption"
+                            color={COLORS.textSecondary}
+                            style={styles.subtitle}
+                        >
+                            {subtitle}
+                        </AppText>
+                    )}
+                </View>
+
+                {/* Right Action */}
+                {rightComponent && (
+                    <View style={styles.rightComponent}>
+                        {rightComponent}
+                    </View>
                 )}
             </View>
 
-            <View style={styles.content}>
-                {Icon && (
-                    <View style={styles.iconContainer}>
-                        <Icon
-                            size={20}
-                            color={COLORS.primaryBright}
-                        />
-                    </View>
-                )}
-
-                <AppText
-                    variant="heading"
-                    weight="700"
-                    style={styles.title}
-                >
-                    {title}
-                </AppText>
-
-                {!!subtitle && (
-                    <AppText
-                        color={COLORS.textSecondary}
-                        style={styles.subtitle}
-                    >
-                        {subtitle}
-                    </AppText>
-                )}
+            {/* Bottom Divider */}
+            <View style={styles.divider}>
+                <View style={styles.accentLine} />
             </View>
         </View>
     );
 }
 
-const createStyles = () => StyleSheet.create({
-    container: {
-        paddingHorizontal: SPACING.xl,
-        paddingTop: SPACING.xl,
-        paddingBottom: SPACING.xxl,
-    },
+const createStyles = () =>
+    StyleSheet.create({
+        container: {
+            paddingHorizontal: SPACING.xl,
+            paddingTop: SPACING.sm,
+            paddingBottom: SPACING.md,
+        },
+        headerRow: {
+            flexDirection: "row",
+            alignItems: "center",
+            gap: SPACING.md,
+            minHeight: 48,
+        },
 
-    topRow: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
+        backButton: {
+            width: 40,
+            height: 40,
+            borderRadius: 20,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: COLORS.surface,
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: COLORS.glassBorder,
+        },
 
-    backButton: {
-        width: 42,
-        height: 42,
-        borderRadius: 21,
+        content: {
+            flex: 1,
+            minWidth: 0,
+            justifyContent: "center",
+        },
 
-        justifyContent: "center",
-        alignItems: "center",
+        titleRow: {
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
+        },
 
-        backgroundColor: COLORS.surface,
+        title: {
+            flexShrink: 1,
+            marginBottom: 0,
+        },
 
-        borderWidth: 1,
-        borderColor: COLORS.glassBorder,
-    },
+        subtitle: {
+            marginTop: 3,
+            lineHeight: 17,
+        },
 
-    placeholder: {
-        width: 42,
-    },
+        rightComponent: {
+            alignItems: "center",
+            justifyContent: "center",
+        },
 
-    content: {
-        marginTop: SPACING.xl,
-    },
+        divider: {
+            height: 2,
+            backgroundColor: COLORS.glassBorder,
+            marginTop: SPACING.lg,
+            borderRadius: 2,
+            overflow: "hidden",
+        },
 
-    iconContainer: {
-        width: 44,
-        height: 44,
-        borderRadius: 22,
-
-        justifyContent: "center",
-        alignItems: "center",
-
-        marginBottom: SPACING.lg,
-
-        backgroundColor: COLORS.primarySoft,
-    },
-
-    title: {
-        marginBottom: SPACING.xs,
-    },
-
-    subtitle: {
-        lineHeight: 22,
-        maxWidth: 320,
-    },
-});
+        accentLine: {
+            width: 42,
+            height: 2,
+            backgroundColor: COLORS.primary,
+            borderRadius: 2,
+        },
+    });

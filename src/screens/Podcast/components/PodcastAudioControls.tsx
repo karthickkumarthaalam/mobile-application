@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ActivityIndicator, LayoutChangeEvent, Pressable, StyleSheet, View } from "react-native";
 import { Heart, Pause, Play, Share2 } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import AppText from "../../../components/Text/AppText";
 import { COLORS } from "../../../constants/colors";
@@ -71,9 +72,14 @@ export default function PodcastAudioControls({
                     onPress={onPress}
                     style={({ pressed }) => [styles.playButton, (pressed || !hasAudio) && styles.playButtonPressed]}
                 >
-                    {isLoading ? <ActivityIndicator color={COLORS.controlIcon} /> : isPlaying
-                        ? <Pause size={26} color={COLORS.controlIcon} fill={COLORS.controlIcon} />
-                        : <Play size={26} color={COLORS.controlIcon} fill={COLORS.controlIcon} />}
+                    <LinearGradient
+                        colors={[COLORS.primaryBright, COLORS.primaryDark]}
+                        style={styles.playButtonGradient}
+                    >
+                        {isLoading ? <ActivityIndicator color={COLORS.white} /> : isPlaying
+                            ? <Pause size={26} color={COLORS.white} fill={COLORS.white} />
+                            : <Play size={26} color={COLORS.white} fill={COLORS.white} />}
+                    </LinearGradient>
                 </Pressable>
 
                 <Pressable accessibilityRole="button" accessibilityLabel="Share" onPress={onShare} hitSlop={8}>
@@ -86,15 +92,17 @@ export default function PodcastAudioControls({
 
 const createStyles = () => StyleSheet.create({
     container: { paddingTop: SPACING.xl, paddingHorizontal: SPACING.xl },
+    unavailable: { marginBottom: SPACING.md, textAlign: "center" },
     progressTouchTarget: { height: 20, justifyContent: "center" },
-    progressTrack: { height: 4, borderRadius: 2, backgroundColor: COLORS.glassStrong },
-    progressFill: { height: 4, borderRadius: 2, backgroundColor: COLORS.text },
-    progressDot: { position: "absolute", top: -4, width: 12, height: 12, marginLeft: -6, borderRadius: 6, backgroundColor: COLORS.text },
+    progressTrack: { height: 5, borderRadius: 3, backgroundColor: COLORS.glassStrong },
+    progressFill: { height: 5, borderRadius: 3, backgroundColor: COLORS.primaryBright },
+    progressDot: { position: "absolute", top: -3, width: 11, height: 11, marginLeft: -5, borderRadius: 6, backgroundColor: COLORS.primaryBright, borderWidth: 2, borderColor: COLORS.background },
     timeRow: { flexDirection: "row", justifyContent: "space-between", marginTop: SPACING.xs },
     time: { color: COLORS.textMuted, fontSize: 11 },
-    controls: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: SPACING.xl, paddingTop: 26 },
+    controls: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: SPACING.lg, paddingTop: SPACING.xl },
     sideControl: { width: 40, alignItems: "center", justifyContent: "center" },
-    playButton: { width: 64, height: 64, borderRadius: 32, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white },
-    playButtonPressed: { opacity: 0.65 },
-    likes: { color: COLORS.textMuted, fontSize: 11, marginTop: SPACING.xxs },
+    likeCount: { marginTop: SPACING.xxs, fontSize: 10 },
+    playButton: { width: 68, height: 68, borderRadius: 34, overflow: "hidden", alignItems: "center", justifyContent: "center", backgroundColor: COLORS.primary },
+    playButtonGradient: { width: "100%", height: "100%", alignItems: "center", justifyContent: "center" },
+    playButtonPressed: { opacity: 0.76, transform: [{ scale: 0.96 }] },
 });

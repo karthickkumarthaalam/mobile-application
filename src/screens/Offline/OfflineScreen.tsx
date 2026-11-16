@@ -1,22 +1,27 @@
-import React, { useEffect } from "react";
+
+import React, { useEffect, useState } from "react";
 import {
-    Image,
+    ActivityIndicator,
     StyleSheet,
-    Text,
     TouchableOpacity,
     View,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { RefreshCw, WifiOff } from "lucide-react-native";
-
+import { WifiOff, RefreshCw } from "lucide-react-native";
 import NetInfo from "@react-native-community/netinfo";
 
+import { COLORS, GRADIENTS } from "../../constants/colors";
+import { SPACING } from "../../constants/spacing";
+import AppText from "../../components/Text/AppText";
+import { useThemedStyles } from "../../providers/ThemeProvider";
 import { useNetwork } from "../../providers/NetworkProvider";
-import { useDevice } from "../../utils/device";
 
 export default function OfflineScreen({ navigation }: any) {
+    const styles = useThemedStyles(createStyles);
     const { isOffline } = useNetwork();
-    const { isTablet } = useDevice();
+
+    const [checking, setChecking] = useState(false);
 
     useEffect(() => {
         if (!isOffline) {
@@ -25,165 +30,294 @@ export default function OfflineScreen({ navigation }: any) {
     }, [isOffline, navigation]);
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View
-                style={[
-                    styles.content,
-                    isTablet && styles.tabletContent,
-                ]}
+        <LinearGradient
+            colors={GRADIENTS.screen}
+            style={styles.gradient}
+        >
+            <SafeAreaView
+                style={styles.safeArea}
+                edges={["top", "bottom"]}
             >
-                <Image
-                    source={require("../../assets/images/logo.png")}
-                    resizeMode="contain"
-                    style={[
-                        styles.logo,
-                        {
-                            width: isTablet ? 120 : 90,
-                            height: isTablet ? 120 : 90,
-                        },
-                    ]}
-                />
+                <View style={styles.content}>
+                    {/* Editorial heading */}
+                    <View style={styles.heading}>
+                        <View style={styles.eyebrowRow}>
+                            <View style={styles.eyebrowLine} />
 
-                <View style={styles.glassCard}>
-                    <View style={styles.iconWrapper}>
-                        <WifiOff
-                            size={isTablet ? 56 : 46}
-                            color="#FFFFFF"
-                            strokeWidth={1.8}
-                        />
+                            <AppText
+                                variant="small"
+                                weight="700"
+                                color={COLORS.primary}
+                                style={styles.eyebrow}
+                            >
+                                CONNECTION STATUS
+                            </AppText>
+                        </View>
+
+                        <AppText
+                            variant="title"
+                            weight="700"
+                            style={styles.title}
+                        >
+                            No Internet Connection
+                        </AppText>
                     </View>
 
-                    <Text
-                        style={[
-                            styles.title,
-                            {
-                                fontSize: isTablet ? 30 : 24,
-                            },
-                        ]}
-                    >
-                        No Internet Connection
-                    </Text>
+                    {/* Feature visual */}
+                    <View style={styles.visualSection}>
+                        <View style={styles.visual}>
+                            <View style={styles.outerRing} />
+                            <View style={styles.middleRing} />
 
-                    <Text
-                        style={[
-                            styles.subtitle,
-                            {
-                                fontSize: isTablet ? 17 : 15,
-                            },
-                        ]}
-                    >
-                        Stay connected to continue listening to
-                        {"\n"}
-                        live radio, music and programmes.
-                    </Text>
+                            <View style={styles.iconContainer}>
+                                <WifiOff
+                                    size={38}
+                                    color={COLORS.primary}
+                                    strokeWidth={1.7}
+                                />
+                            </View>
 
+                            <View style={styles.decorDot} />
+                            <View style={styles.decorDotSmall} />
+                        </View>
+
+                        <View style={styles.visualCaption}>
+                            <View style={styles.captionLine} />
+
+                            <AppText
+                                variant="small"
+                                weight="600"
+                                color={COLORS.textSecondary}
+                            >
+                                CONNECTION INTERRUPTED
+                            </AppText>
+
+                            <View style={styles.captionLine} />
+                        </View>
+                    </View>
+
+                    {/* Description */}
+                    <View style={styles.descriptionSection}>
+                        <AppText
+                            variant="subHeading"
+                            weight="700"
+                            align="center"
+                            style={styles.descriptionTitle}
+                        >
+                            Your next favourite moment is waiting.
+                        </AppText>
+
+                        <AppText
+                            color={COLORS.textSecondary}
+                            align="center"
+                            style={styles.description}
+                        >
+                            Check your internet connection to continue
+                            listening to live radio, music and programmes
+                            on Thaalam.
+                        </AppText>
+                    </View>
+
+                    {/* Network status */}
                     <View style={styles.status}>
                         <View style={styles.statusDot} />
-                        <Text style={styles.statusText}>
-                            Waiting for network...
-                        </Text>
-                    </View>
-                </View>
 
-            </View>
-        </SafeAreaView>
+                        <AppText
+                            variant="small"
+                            weight="600"
+                            color={COLORS.textSecondary}
+                        >
+                            Waiting for network...
+                        </AppText>
+                    </View>
+
+
+                </View>
+            </SafeAreaView>
+        </LinearGradient>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#0A0A0E",
-    },
+const createStyles = () =>
+    StyleSheet.create({
+        gradient: {
+            flex: 1,
+        },
 
-    content: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 28,
-    },
+        safeArea: {
+            flex: 1,
+        },
 
-    tabletContent: {
-        width: "100%",
-        maxWidth: 520,
-        alignSelf: "center",
-    },
+        content: {
+            flex: 1,
+            width: "100%",
+            maxWidth: 620,
+            alignSelf: "center",
+            paddingHorizontal: SPACING.xl,
+            paddingTop: SPACING.xxxl,
+            paddingBottom: SPACING.xxxl,
+        },
 
-    logo: {
-        marginBottom: 36,
-    },
+        // Heading
+        heading: {
+            alignItems: "flex-start",
+            marginBottom: SPACING.xxl,
+        },
 
-    glassCard: {
-        width: "100%",
-        alignItems: "center",
+        eyebrowRow: {
+            flexDirection: "row",
+            alignItems: "center",
+            gap: SPACING.sm,
+        },
 
-    },
+        eyebrowLine: {
+            width: 22,
+            height: 2,
+            borderRadius: 2,
+            backgroundColor: COLORS.primary,
+        },
 
-    iconWrapper: {
-        width: 82,
-        height: 82,
+        eyebrow: {
+            letterSpacing: 1.6,
+            textTransform: "uppercase",
+        },
 
-        borderRadius: 41,
+        title: {
+            marginTop: SPACING.md,
+            letterSpacing: -1.1,
+            lineHeight: 46,
+        },
 
-        backgroundColor: "rgba(228,30,38,0.15)",
+        // Feature visual
+        visualSection: {
+            alignItems: "center",
+            marginTop: SPACING.xxxl,
+            marginBottom: SPACING.xxl,
+        },
 
-        justifyContent: "center",
-        alignItems: "center",
+        visual: {
+            width: 220,
+            height: 220,
+            alignItems: "center",
+            justifyContent: "center",
+        },
 
-        marginBottom: 24,
+        outerRing: {
+            position: "absolute",
+            width: 210,
+            height: 210,
+            borderRadius: 105,
+            borderWidth: 1,
+            borderColor: COLORS.glassBorder,
+        },
 
-        borderWidth: 1,
-        borderColor: "rgba(228,30,38,0.35)",
-    },
+        middleRing: {
+            position: "absolute",
+            width: 154,
+            height: 154,
+            borderRadius: 77,
+            borderWidth: 1,
+            borderColor: COLORS.primaryBorder,
+            backgroundColor: COLORS.primarySoft,
+        },
 
-    title: {
-        color: "#FFFFFF",
-        fontFamily: "InclusiveSans",
-        fontWeight: "700",
-        textAlign: "center",
-    },
+        iconContainer: {
+            width: 104,
+            height: 104,
+            borderRadius: 52,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: COLORS.surface,
+            borderWidth: 1,
+            borderColor: COLORS.primaryBorder,
+        },
 
-    subtitle: {
-        marginTop: 16,
+        decorDot: {
+            position: "absolute",
+            top: 32,
+            right: 32,
+            width: 11,
+            height: 11,
+            borderRadius: 6,
+            backgroundColor: COLORS.primary,
+        },
 
-        color: "rgba(255,255,255,0.65)",
+        decorDotSmall: {
+            position: "absolute",
+            bottom: 40,
+            left: 28,
+            width: 7,
+            height: 7,
+            borderRadius: 4,
+            backgroundColor: COLORS.primaryBright,
+            opacity: 0.7,
+        },
 
-        textAlign: "center",
+        visualCaption: {
+            flexDirection: "row",
+            alignItems: "center",
+            gap: SPACING.md,
+            marginTop: SPACING.lg,
+        },
 
-        lineHeight: 25,
+        captionLine: {
+            width: 24,
+            height: 1,
+            backgroundColor: COLORS.glassBorder,
+        },
 
-        fontFamily: "InclusiveSans",
-    },
+        // Description
+        descriptionSection: {
+            alignItems: "center",
+            paddingHorizontal: SPACING.sm,
+        },
 
-    status: {
-        marginTop: 26,
+        descriptionTitle: {
+            letterSpacing: -0.3,
+        },
 
-        flexDirection: "row",
-        alignItems: "center",
+        description: {
+            maxWidth: 350,
+            marginTop: SPACING.sm,
+            lineHeight: 23,
+        },
 
-        backgroundColor: "rgba(255,255,255,0.05)",
+        // Network status
+        status: {
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: SPACING.sm,
+            marginTop: SPACING.xxl,
+        },
 
-        borderRadius: 50,
+        statusDot: {
+            width: 8,
+            height: 8,
+            borderRadius: 4,
+            backgroundColor: COLORS.primary,
+        },
 
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-    },
+        // Retry action
+        retryButton: {
+            height: 48,
+            minWidth: 160,
+            alignSelf: "center",
+            marginTop: SPACING.xl,
+            paddingHorizontal: SPACING.xxl,
+            borderRadius: 24,
+            backgroundColor: COLORS.primary,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: SPACING.sm,
+        },
 
-    statusDot: {
-        width: 8,
-        height: 8,
+        retryButtonDisabled: {
+            opacity: 0.7,
+        },
 
-        borderRadius: 4,
-
-        backgroundColor: "#22C55E",
-
-        marginRight: 8,
-    },
-
-    statusText: {
-        color: "#D1D5DB",
-        fontSize: 13,
-        fontFamily: "InclusiveSans",
-    },
-
-});
+        retryText: {
+            fontSize: 14,
+        },
+    });

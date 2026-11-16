@@ -75,7 +75,7 @@ export default function AuthLayout({
                 <AppText variant="title" weight="700" style={styles.title}>
                     {title}
                 </AppText>
-                <AppText color={COLORS.textSecondary} style={styles.subtitle}>
+                <AppText color={COLORS.primaryText} weight="600" variant="caption" style={styles.subtitle}>
                     {subtitle}
                 </AppText>
 

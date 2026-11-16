@@ -147,8 +147,8 @@ export default function AuthBottomSheet() {
                         colors={GRADIENTS.sheet}
                         style={StyleSheet.absoluteFill}
                     />
-                    <View style={styles.redGlow} />
-                    <View style={styles.topHighlight} />
+                    {/* <View style={styles.redGlow} /> */}
+                    {/* <View style={styles.topHighlight} /> */}
 
                     <View style={styles.chrome}>
                         <View style={styles.handle} />

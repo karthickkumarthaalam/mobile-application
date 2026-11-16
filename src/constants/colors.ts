@@ -45,6 +45,13 @@ export const THEMES = {
 
     white: "#FFFFFF",
     black: "#000000",
+    gold: "#F5D78E",
+
+    // Section / UI colors
+    secondaryBackground: "#202020",
+    borderColor: "#303030",
+    primaryText: "#FFFFFF",
+    mutedText: "#A1A1AA",
   },
   light: {
     primary: "#C92830",
@@ -76,6 +83,13 @@ export const THEMES = {
     warning: "#B77912",
     white: "#FFFFFF",
     black: "#000000",
+    gold: "#B8860B",
+
+    // Section / UI colors
+    secondaryBackground: "#F7F8FA",
+    borderColor: "#E9EAED",
+    primaryText: "#191919",
+    mutedText: "#737780",
   },
 } as const;
 
@@ -91,7 +105,7 @@ export const GRADIENTS: {
   primaryPressed: [string, string];
 } = {
   screen: ["#F7F8FA", "#F1F2F4", "#fff7f7"],
-  sheet: ["rgba(255,255,255,0.98)", "rgba(190, 206, 240, 0.99)"],
+  sheet: ["rgba(255,255,255,0.98)", "rgba(255, 255, 250, 0.99)"],
   primary: [COLORS.primaryBright, COLORS.primaryDark],
   primaryPressed: [COLORS.primary, "#991117"],
 };
@@ -102,11 +116,11 @@ export const applyThemeColors = (mode: ThemeMode) => {
     screen:
       mode === "dark"
         ? ["#030D14", "#08080B", "#100608"]
-        : ["#F7F8FA", "#F1F2F4", "#fff7f7"],
+        : ["#FFFFFF", "#FFFFFF", "#FFFDFD"],
     sheet:
       mode === "dark"
         ? ["rgba(25,25,30,0.98)", "rgba(8,8,11,0.99)"]
-        : ["rgba(255,255,255,0.98)", "rgba(190, 206, 240, 0.99)"],
+        : ["rgba(255,255,255,0.98)", "rgba(255, 255, 250, 0.99)"],
     primary: [COLORS.primaryBright, COLORS.primaryDark],
     primaryPressed: [COLORS.primary, mode === "dark" ? "#991117" : "#A90F16"],
   });

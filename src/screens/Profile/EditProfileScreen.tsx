@@ -4,6 +4,7 @@ import {
     StyleSheet,
     View,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 import ScreenHeader from "../../components/Layout/ScreenHeader";
 import ProfileCard from "./components/ProfileCard";
@@ -17,9 +18,9 @@ import { useNavigation } from "@react-navigation/native";
 
 import countries from "../../assets/json/countries.json";
 
-import { COLORS } from "../../constants/colors";
+import { COLORS, GRADIENTS } from "../../constants/colors";
 import { SPACING } from "../../constants/spacing";
-import AppText from "../../components/Text/AppText";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNotification } from "../../providers/NotificationProvider";
 import { updateProfile } from "../../api/auth.api";
 import { useThemedStyles } from "../../providers/ThemeProvider";
@@ -172,139 +173,165 @@ export default function EditProfileScreen() {
         }
     };
 
+
     return (
-        <ScrollView
-            style={styles.container}
-            contentContainerStyle={styles.content}
-            showsVerticalScrollIndicator={false}
-        >
-            <ScreenHeader
-                title="Edit Profile"
-                subtitle="Keep your profile information up to date."
-            />
-
-            <ProfileCard
-                title="Personal Information"
-                subtitle="Basic information about you."
-                delay={100}
-            >
-                <AppTextInput
-                    label="Full Name"
-                    value={name}
-                    onChangeText={setName}
+        <LinearGradient colors={GRADIENTS.screen} style={{ flex: 1 }}>
+            {/* Fixed Header */}
+            <SafeAreaView style={styles.safeArea} edges={["top"]}>
+                <ScreenHeader
+                    title="Edit Profile"
+                    subtitle="Keep your profile information up to date."
                 />
 
-                <AppSelect
-                    label="Gender"
-                    value={gender}
-                    placeholder="Select Gender"
-                    items={[
-                        {
-                            label: "Male",
-                            value: "Male",
-                        },
-                        {
-                            label: "Female",
-                            value: "Female",
-                        },
-                        {
-                            label: "Other",
-                            value: "Other",
-                        },
-                    ]}
-                    onChange={setGender}
-                />
+                {/* Scrollable Content */}
+                <ScrollView
+                    style={styles.container}
+                    contentContainerStyle={styles.content}
+                    showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    <ProfileCard
+                        title="Personal Information"
+                        subtitle="Basic information about you."
+                        delay={100}
+                    >
+                        <AppTextInput
+                            label="Full Name"
+                            value={name}
+                            onChangeText={setName}
+                        />
 
-                <AppTextInput
-                    label="Phone Number"
-                    keyboardType="phone-pad"
-                    value={phone}
-                    onChangeText={setPhone}
-                />
-            </ProfileCard>
+                        <View style={styles.row}>
+                            <View style={styles.genderField}>
+                                <AppSelect
+                                    label="Gender"
+                                    value={gender}
+                                    placeholder="Select Gender"
+                                    items={[
+                                        { label: "Male", value: "Male" },
+                                        { label: "Female", value: "Female" },
+                                        { label: "Other", value: "Other" },
+                                    ]}
+                                    onChange={setGender}
+                                />
+                            </View>
 
-            <ProfileCard
-                title="Location"
-                subtitle="Where you're located."
-                delay={200}
-            >
-                <AppSelect
-                    label="Country"
-                    value={country}
-                    searchable
-                    placeholder="Select Country"
-                    items={countries.map(item => ({
-                        label: item.name,
-                        value: item.name,
-                    }))}
-                    onChange={handleCountry}
-                />
+                            <View style={styles.phoneField}>
+                                <AppTextInput
+                                    label="Phone Number"
+                                    keyboardType="phone-pad"
+                                    value={phone}
+                                    onChangeText={setPhone}
+                                />
+                            </View>
+                        </View>
+                    </ProfileCard>
 
-                <AppSelect
-                    label="State"
-                    value={state}
-                    searchable
-                    placeholder="Select State"
-                    disabled={!country}
-                    items={states.map(item => ({
-                        label: item.name,
-                        value: item.name,
-                    }))}
-                    onChange={handleState}
-                />
+                    <ProfileCard
+                        title="Location"
+                        subtitle="Where you're located."
+                        delay={200}
+                    >
+                        <AppSelect
+                            label="Country"
+                            value={country}
+                            searchable
+                            placeholder="Select Country"
+                            items={countries.map(item => ({
+                                label: item.name,
+                                value: item.name,
+                            }))}
+                            onChange={handleCountry}
+                        />
 
-                <AppSelect
-                    label="City"
-                    value={city}
-                    searchable
-                    placeholder="Select City"
-                    disabled={!state}
-                    items={cities.map(item => ({
-                        label: item,
-                        value: item,
-                    }))}
-                    onChange={setCity}
-                />
+                        <AppSelect
+                            label="State"
+                            value={state}
+                            searchable
+                            placeholder="Select State"
+                            disabled={!country}
+                            items={states.map(item => ({
+                                label: item.name,
+                                value: item.name,
+                            }))}
+                            onChange={handleState}
+                        />
 
-                <AppTextInput
-                    label="Address Line 1"
-                    value={address1}
-                    onChangeText={setAddress1}
-                />
+                        <AppSelect
+                            label="City"
+                            value={city}
+                            searchable
+                            placeholder="Select City"
+                            disabled={!state}
+                            items={cities.map(item => ({
+                                label: item,
+                                value: item,
+                            }))}
+                            onChange={setCity}
+                        />
 
-                <AppTextInput
-                    label="Address Line 2"
-                    value={address2}
-                    onChangeText={setAddress2}
-                />
+                        <AppTextInput
+                            label="Address Line 1"
+                            value={address1}
+                            onChangeText={setAddress1}
+                        />
 
-                <AppTextInput
-                    label="Zip Code"
-                    value={zipCode}
-                    onChangeText={setZipCode}
-                />
-            </ProfileCard>
+                        <AppTextInput
+                            label="Address Line 2"
+                            value={address2}
+                            onChangeText={setAddress2}
+                        />
 
-            <View style={styles.footer}>
-                <PrimaryButton
-                    title="Save Changes"
-                    size="lg"
-                    loading={loading}
-                    onPress={handleSave}
-                />
-            </View>
-        </ScrollView>
+                        <AppTextInput
+                            label="Zip Code"
+                            value={zipCode}
+                            onChangeText={setZipCode}
+                        />
+                    </ProfileCard>
+
+                    <View style={styles.footer}>
+                        <PrimaryButton
+                            title="Save Changes"
+                            size="lg"
+                            loading={loading}
+                            onPress={handleSave}
+                        />
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+
+        </LinearGradient>
     );
+
 }
 
 const createStyles = () => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
+    },
+
+    safeArea: {
+        flex: 1,
     },
 
     content: {
         paddingBottom: SPACING.xxxl,
+    },
+
+    row: {
+        flexDirection: "row",
+        alignItems: "flex-start",
+        gap: 12,
+    },
+
+    genderField: {
+        flex: 0.8,
+        minWidth: 0,
+    },
+
+    phoneField: {
+        flex: 1.2,
+        minWidth: 0,
     },
 
     footer: {

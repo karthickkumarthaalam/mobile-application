@@ -9,6 +9,7 @@ import AppText from "../../components/Text/AppText";
 import { COLORS, GRADIENTS } from "../../constants/colors";
 import { SPACING, RADIUS } from "../../constants/spacing";
 import { useThemedStyles } from "../../providers/ThemeProvider";
+import ScreenHeader from "../../components/Layout/ScreenHeader";
 
 const SECTIONS = [
     {
@@ -56,12 +57,7 @@ export default function PrivacyPolicyScreen() {
         <LinearGradient colors={GRADIENTS.screen} style={styles.gradient}>
             <SafeAreaView style={styles.safeArea} edges={["top"]}>
 
-                <View style={styles.header}>
-                    <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
-                        <ChevronLeft size={22} color={COLORS.text} strokeWidth={2} />
-                    </TouchableOpacity>
-
-                </View>
+                <ScreenHeader title="Privacy Policy" />
 
                 <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
@@ -73,7 +69,7 @@ export default function PrivacyPolicyScreen() {
                         <AppText variant="heading" weight="700" align="center" style={styles.heroTitle}>
                             Your Privacy Matters
                         </AppText>
-                        <AppText variant="body" align="center" color={COLORS.textSecondary} style={styles.heroSub}>
+                        <AppText variant="caption" align="center" color={COLORS.primaryText} style={styles.heroSub}>
                             At Thaalam Media, we are committed to protecting your personal information and being transparent about how we use it.
                         </AppText>
                     </View>
@@ -87,7 +83,7 @@ export default function PrivacyPolicyScreen() {
                                     {title}
                                 </AppText>
                             </View>
-                            <AppText variant="body" color={COLORS.textSecondary} style={styles.sectionBody}>
+                            <AppText variant="caption" color={COLORS.primaryText} style={styles.sectionBody}>
                                 {body}
                             </AppText>
                         </View>
@@ -161,7 +157,7 @@ const createStyles = () => StyleSheet.create({
     },
 
     sectionCard: {
-        backgroundColor: COLORS.surface,
+        backgroundColor: COLORS.backgroundSecondary,
         borderRadius: RADIUS.lg,
         borderWidth: 1,
         borderColor: COLORS.glassBorder,

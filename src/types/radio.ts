@@ -30,7 +30,7 @@ export interface NextProgram {
 }
 
 export interface ProgramCategory {
-  id: number;
+  id: number | string;
   category: string;
   start_time: string;
   end_time: string;
@@ -39,6 +39,25 @@ export interface ProgramCategory {
   image_url: string;
   mobile_image_url: string;
   background_color?: string;
+}
+
+export interface ScheduledProgram {
+  id: number | string;
+  radioProgramId: number | string;
+  category: string;
+  start_time: string;
+  end_time: string;
+  image_url: string;
+}
+
+export interface CurrentSpecialShow {
+  id?: number | string;
+  title: string;
+  description?: string;
+  image?: string;
+  starts_at?: string;
+  ends_at?: string;
+  system_users?: { name?: string } | null;
 }
 
 export interface SystemUser {
@@ -54,4 +73,5 @@ export interface RadioStation {
   logo: string;
   play_type: string;
   redirect_url: string;
+  maintenance?: boolean | string;
 }

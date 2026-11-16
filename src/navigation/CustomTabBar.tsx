@@ -1,66 +1,70 @@
-import React from "react";
+
+import React, { useEffect, useRef } from "react";
 import {
     View,
     TouchableOpacity,
-    Text,
     StyleSheet,
-    Platform,
-    Image,
     Animated,
-    ActivityIndicator,
 } from "react-native";
-import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { LinearGradient } from "expo-linear-gradient";
-import { House, Radio, CalendarDays, Newspaper, CircleUserRound, Play, Pause, Mic } from "lucide-react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useDevice } from "../utils/device";
-import { useAudio } from "../providers/AudioProvider";
-import { COLORS, GRADIENTS } from "../constants/colors";
-import MiniPlayer from "../components/Audio/MiniPlayer";
-import { useTheme } from "../providers/ThemeProvider";
 
-const ICONS: Record<string, any> = {
-    Main: House,
-    Podcast: Radio,
-    // Package: CalendarDays,
-    Rjs: Mic,
-    News: Newspaper,
-    Profile: CircleUserRound,
+import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import {
+    Mic,
+    Newspaper,
+    CircleUserRound,
+    type LucideIcon,
+    RadioReceiver,
+    Headphones,
+    BookHeadphones,
+    MicAudioLines,
+    BookOpenText,
+} from "lucide-react-native";
+
+import { useTheme } from "../providers/ThemeProvider";
+import { COLORS } from "../constants/colors";
+import { SPACING } from "../constants/spacing";
+
+// ─── Tab Configuration ────────────────────────────────────────────────────────
+
+const TABS: Record<string, { icon: LucideIcon; label: string; }> = {
+    Main: { icon: RadioReceiver, label: "Home" },
+    Podcast: { icon: BookHeadphones, label: "Podcasts" },
+    Rjs: { icon: MicAudioLines, label: "RJs" },
+    News: { icon: BookOpenText, label: "News" },
+    Profile: { icon: CircleUserRound, label: "Profile" },
 };
 
-export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
+// ─── Custom Tab Bar ───────────────────────────────────────────────────────────
+
+export default function CustomTabBar({
+    state,
+    navigation,
+}: BottomTabBarProps) {
     const insets = useSafeAreaInsets();
-    const { isTablet } = useDevice();
-    const { nowPlaying } = useAudio();
-    const { isDark } = useTheme();
 
-
-    const currentRoute = state.routes[state.index];
-    const showMiniPlayer = currentRoute.name === "Podcast";
-
-    const openNowPlaying = () => {
-        if (nowPlaying?.type === "podcast") {
-            navigation.getParent()?.navigate("PodcastDetails", { id: nowPlaying.id });
-        } else if (nowPlaying?.type === "radio") {
-            navigation.getParent()?.navigate("Home", {
-                screen: "Main",
-            });
-        }
-    };
+    useTheme();
 
     return (
-        <View style={[styles.wrapper, { bottom: Math.max(insets.bottom + 8, 20) }]}>
-            {/* Mini Player Bar */}
-            {nowPlaying && showMiniPlayer && (
-                <MiniPlayer onPress={openNowPlaying} />
-            )}
+        <View style={styles.wrapper}>
 
-            {/* Tab Bar */}
-            <View style={[styles.bar, { backgroundColor: isDark ? "rgba(14, 14, 16)" : "rgba(255,255,255)", borderColor: COLORS.glassBorder }]}>
+
+            <View
+                style={[
+                    styles.bar,
+                    {
+                        backgroundColor: COLORS.surface,
+                        borderTopColor: COLORS.glassBorder,
+                        paddingBottom: Math.max(insets.bottom, 10),
+                    },
+                ]}
+            >
                 {state.routes.map((route, index) => {
                     const focused = state.index === index;
-                    const isHome = route.name === "Main";
-                    const Icon = ICONS[route.name];
+                    const tab = TABS[route.name];
+
+                    if (!tab) return null;
 
                     const onPress = () => {
                         const event = navigation.emit({
@@ -68,60 +72,28 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
                             target: route.key,
                             canPreventDefault: true,
                         });
+
                         if (!focused && !event.defaultPrevented) {
                             navigation.navigate(route.name);
                         }
                     };
 
-                    if (isHome) {
-                        return (
-                            <View key={route.key} style={styles.homeWrapper}>
-                                <LinearGradient
-                                    colors={focused ? GRADIENTS.primary : isDark ? ["rgba(255,255,255,0.22)", "rgba(255,255,255,0.05)"] : ["rgba(9,9,11,0.16)", "rgba(9,9,11,0.04)"]}
-                                    start={{ x: 0, y: 0 }}
-                                    end={{ x: 1, y: 1 }}
-                                    style={[styles.homeBtnGlow, focused && styles.homeBtnGlowActive]}
-                                >
-                                    <TouchableOpacity
-                                        activeOpacity={0.9}
-                                        onPress={onPress}
-                                        style={[styles.homeBtn, focused && styles.homeBtnActive, { backgroundColor: isDark ? "#131317" : COLORS.surfaceElevated, borderColor: COLORS.glassBorder }]}
-                                    >
-                                        <Icon
-                                            size={isTablet ? 28 : 24}
-                                            color={isDark ? "#fff" : COLORS.text}
-                                            strokeWidth={2.2}
-                                        />
-                                    </TouchableOpacity>
-                                </LinearGradient>
-                                <Text style={[styles.label, { opacity: focused ? 1 : 0.5, color: COLORS.text }]}>
-                                    Home
-                                </Text>
-                            </View>
-                        );
-                    }
+                    const onLongPress = () => {
+                        navigation.emit({
+                            type: "tabLongPress",
+                            target: route.key,
+                        });
+                    };
 
                     return (
-                        <TouchableOpacity
+                        <TabItem
                             key={route.key}
-                            activeOpacity={0.75}
-                            style={styles.item}
+                            icon={tab.icon}
+                            label={tab.label}
+                            focused={focused}
                             onPress={onPress}
-                        >
-                            <View style={[styles.iconWrap, focused && styles.iconWrapFocused, focused && { backgroundColor: COLORS.primarySoft }]}>
-                                <Icon
-                                    size={isTablet ? 26 : 24}
-                                    color={focused ? COLORS.primary : COLORS.textSecondary}
-                                    strokeWidth={focused ? 2.2 : 1.7}
-                                />
-                            </View>
-                            <Text style={[
-                                styles.label,
-                                { color: focused ? COLORS.text : COLORS.textSecondary },
-                            ]}>
-                                {route.name}
-                            </Text>
-                        </TouchableOpacity>
+                            onLongPress={onLongPress}
+                        />
                     );
                 })}
             </View>
@@ -129,242 +101,172 @@ export default function CustomTabBar({ state, navigation }: BottomTabBarProps) {
     );
 }
 
+// ─── Tab Item ─────────────────────────────────────────────────────────────────
+
+interface TabItemProps {
+    icon: LucideIcon;
+    label: string;
+    focused: boolean;
+    onPress: () => void;
+    onLongPress: () => void;
+}
+
+function TabItem({
+    icon: Icon,
+    label,
+    focused,
+    onPress,
+    onLongPress,
+}: TabItemProps) {
+    const iconScale = useRef(
+        new Animated.Value(focused ? 1 : 0.94)
+    ).current;
+
+    const indicatorOpacity = useRef(
+        new Animated.Value(focused ? 1 : 0)
+    ).current;
+
+    const indicatorScale = useRef(
+        new Animated.Value(focused ? 1 : 0.5)
+    ).current;
+
+    useEffect(() => {
+        Animated.parallel([
+            Animated.spring(iconScale, {
+                toValue: focused ? 1 : 0.94,
+                tension: 150,
+                friction: 12,
+                useNativeDriver: true,
+            }),
+
+            Animated.timing(indicatorOpacity, {
+                toValue: focused ? 1 : 0,
+                duration: 180,
+                useNativeDriver: true,
+            }),
+
+            Animated.spring(indicatorScale, {
+                toValue: focused ? 1 : 0.5,
+                tension: 150,
+                friction: 12,
+                useNativeDriver: true,
+            }),
+        ]).start();
+    }, [focused, iconScale, indicatorOpacity, indicatorScale]);
+
+    const activeColor = COLORS.primary;
+    const inactiveColor = COLORS.textMuted;
+
+    const iconColor = focused ? activeColor : inactiveColor;
+
+    return (
+        <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            delayLongPress={500}
+            accessibilityRole="button"
+            accessibilityLabel={label}
+            accessibilityState={{ selected: focused }}
+            style={styles.tabItem}
+        >
+            {/* Active Indicator */}
+            <Animated.View
+                pointerEvents="none"
+                style={[
+                    styles.activeIndicator,
+                    {
+                        backgroundColor: COLORS.primary,
+                        opacity: indicatorOpacity,
+                        transform: [{ scaleX: indicatorScale }],
+                    },
+                ]}
+            />
+
+            {/* Icon */}
+            <Animated.View
+                style={[
+                    styles.iconWrap,
+                    {
+                        transform: [{ scale: iconScale }],
+                    },
+                ]}
+            >
+                <Icon
+                    size={22}
+                    color={iconColor}
+                    strokeWidth={focused ? 2.3 : 1.7}
+                />
+            </Animated.View>
+
+            {/* Label */}
+            <Animated.Text
+                numberOfLines={1}
+                style={[
+                    styles.label,
+                    {
+                        color: iconColor,
+                        fontWeight: focused ? "700" : "500",
+                        opacity: focused ? 1 : 0.75,
+                    },
+                ]}
+            >
+                {label}
+            </Animated.Text>
+        </TouchableOpacity>
+    );
+}
+
+// ─── Styles ───────────────────────────────────────────────────────────────────
+
 const styles = StyleSheet.create({
     wrapper: {
-        position: "absolute",
-        left: 20,
-        right: 20,
-        alignItems: "center",
-        gap: 10,
-    },
-
-    // Mini player
-    miniPlayer: {
         width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 12,
-        backgroundColor: "rgba(18,18,20,0.95)",
-        borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.08)",
-        borderRadius: 20,
-        paddingHorizontal: 12,
-        paddingVertical: 10,
-        ...Platform.select({
-            ios: {
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 8 },
-                shadowOpacity: 0.45,
-                shadowRadius: 16,
-            },
-            android: { elevation: 16 },
-        }),
-    },
-
-    miniContent: {
-        flex: 1,
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 12,
-    },
-
-    miniArtwork: {
-        width: 42,
-        height: 42,
-        borderRadius: 10,
-    },
-
-    miniArtworkFallback: {
-        backgroundColor: "rgba(255,255,255,0.06)",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-
-    miniInfo: {
-        flex: 1,
-        gap: 3,
-    },
-
-    miniLiveBadge: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 5,
-    },
-
-    miniLiveDot: {
-        width: 6,
-        height: 6,
-        borderRadius: 3,
-        backgroundColor: "#E41E26",
-    },
-
-    miniLiveText: {
-        color: "#E41E26",
-        fontSize: 10,
-        fontFamily: "InclusiveSans",
-        fontWeight: "700",
-        letterSpacing: 1.2,
-    },
-
-    miniTitle: {
-        color: "#fff",
-        fontSize: 13,
-        fontFamily: "InclusiveSans",
-        fontWeight: "700",
-    },
-
-    miniSubtitle: {
-        color: "rgba(255,255,255,0.55)",
-        fontSize: 11,
-        fontFamily: "InclusiveSans",
-    },
-
-    miniPlayBtn: {
-        width: 38,
-        height: 38,
-        borderRadius: 19,
-        backgroundColor: "rgba(255,255,255,0.06)",
-        borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.1)",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-
-    miniPlayBtnActive: {
-        backgroundColor: "rgba(228,30,38,0.15)",
-        borderColor: "rgba(228,30,38,0.3)",
-    },
-
-    loadingDot: {
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        backgroundColor: "rgba(255,255,255,0.4)",
+        backgroundColor: COLORS.surface,
     },
 
     bar: {
-        width: "100%",
         flexDirection: "row",
-        alignItems: "flex-end",
-        height: 64,
-        borderRadius: 32,
-        backgroundColor: "rgba(14, 14, 16, 0.9)",
-        borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.07)",
-        paddingHorizontal: 12,
-        ...Platform.select({
-            ios: {
-                shadowColor: "#000",
-                shadowOffset: { width: 0, height: 12 },
-                shadowOpacity: 0.5,
-                shadowRadius: 24,
-            },
-            android: { elevation: 20 },
-        }),
+        alignItems: "center",
+        paddingTop: 8,
+        borderTopWidth: StyleSheet.hairlineWidth,
     },
 
-    item: {
+    tabItem: {
         flex: 1,
         alignItems: "center",
-        justifyContent: "flex-end",
-        paddingVertical: 10,
-        gap: 3,
+        justifyContent: "center",
+        position: "relative",
+        gap: 5,
+        paddingHorizontal: 2,
+        paddingTop: 7,
+        paddingBottom: 3,
+        minHeight: 53,
+    },
+
+    activeIndicator: {
+        position: "absolute",
+        top: 0,
+        width: 20,
+        height: 2.5,
     },
 
     iconWrap: {
-        width: 40,
-        height: 32,
+        height: 25,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: 16,
-    },
-
-    iconWrapFocused: {
-        borderRadius: 16,
-        backgroundColor: "rgba(255,255,255,0.09)",
-
-    },
-
-    dot: {
-        position: "absolute",
-        bottom: -2,
-        width: 4,
-        height: 4,
-        borderRadius: 2,
-        backgroundColor: "#E41E26",
     },
 
     label: {
-        fontSize: 12,
+        fontSize: 11,
         fontFamily: "InclusiveSans",
-        fontWeight: "600",
+        letterSpacing: 0.15,
+        textAlign: "center",
     },
 
-    // Home center raised button
-    homeWrapper: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "flex-end",
-        paddingBottom: 8,
-        gap: 4,
-        marginTop: -22,
-    },
-
-    homeBtnGlow: {
-        width: 56,
-        height: 56,
-        borderRadius: 33,
-        padding: 2,
-        alignItems: "center",
-        justifyContent: "center",
-        ...Platform.select({
-            ios: {
-                shadowColor: "#E41E26",
-                shadowOffset: { width: 0, height: 10 },
-                shadowOpacity: 0.18,
-                shadowRadius: 18,
-            },
-            android: {
-                elevation: 10,
-            },
-        }),
-    },
-
-    homeBtnGlowActive: {
-        ...Platform.select({
-            ios: {
-                shadowOpacity: 0.48,
-                shadowRadius: 22,
-            },
-            android: {
-                elevation: 14,
-            },
-        }),
-    },
-
-    homeBtn: {
-        width: 54,
-        height: 54,
-        borderRadius: 30,
-        backgroundColor: "rgba(19, 19, 23, 0.98)",
-        alignItems: "center",
-        justifyContent: "center",
-        borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.16)",
-        overflow: "hidden",
-    },
-
-    homeBtnActive: {
-        backgroundColor: "#0F0F14",
-        borderColor: "rgba(255,255,255,0.2)",
-        ...Platform.select({
-            ios: {
-                shadowColor: "#E41E26",
-                shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: 0.6,
-                shadowRadius: 16,
-            },
-            android: { elevation: 12 },
-        }),
+    miniPlayerWrap: {
+        paddingHorizontal: SPACING.lg,
+        paddingTop: SPACING.sm,
+        backgroundColor: COLORS.surface,
     },
 });

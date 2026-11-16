@@ -40,11 +40,6 @@ export default function ProfileScreen() {
     const { isDark, toggleTheme } = useTheme();
     const styles = useThemedStyles(createStyles);
 
-
-    const openWebsite = (url: string) => {
-        Linking.openURL(url);
-    };
-
     const confirmLogout = async () => {
         await logout();
         showSuccess(
@@ -67,32 +62,24 @@ export default function ProfileScreen() {
                 email={session?.member?.email}
                 onLogin={() => openAuthSheet("login")}
             />
-            <ProfileSection title="Account">
-                {isAuthenticated ? (
-                    <>
-                        <ProfileMenuItem
-                            icon={CircleUserRound}
-                            title="Edit Profile"
-                            onPress={() =>
-                                navigation.navigate("EditProfile")
-                            }
-                        />
+            {isAuthenticated && (<ProfileSection title="Account">
 
-                        <ProfileMenuItem
-                            icon={LogOut}
-                            title="Logout"
-                            destructive
-                            onPress={() => setLogoutVisible(true)}
-                        />
-                    </>
-                ) : (
-                    <ProfileMenuItem
-                        icon={CircleUserRound}
-                        title="Login"
-                        onPress={() => openAuthSheet("login")}
-                    />
-                )}
-            </ProfileSection>
+                <ProfileMenuItem
+                    icon={CircleUserRound}
+                    title="Edit Profile"
+                    onPress={() =>
+                        navigation.navigate("EditProfile")
+                    }
+                />
+
+                <ProfileMenuItem
+                    icon={LogOut}
+                    title="Logout"
+                    destructive
+                    onPress={() => setLogoutVisible(true)}
+                />
+
+            </ProfileSection>)}
 
 
 
@@ -164,11 +151,10 @@ export default function ProfileScreen() {
 const createStyles = () => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: COLORS.background,
+        backgroundColor: COLORS.surface,
     },
 
     content: {
-        paddingVertical: SPACING.xl,
         paddingBottom: 120,
     },
 });

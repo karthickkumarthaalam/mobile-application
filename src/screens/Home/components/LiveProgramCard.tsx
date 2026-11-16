@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import {
     ActivityIndicator,
     Animated,
-    Dimensions,
     ImageBackground,
     StyleSheet,
     Text,
@@ -21,58 +20,55 @@ import {
     Share2,
     Sun,
 } from "lucide-react-native";
-import { Image } from "react-native";
-import { COLORS } from "../../../constants/colors";
+
+import AppText from "../../../components/Text/AppText";
+import { COLORS, GRADIENTS } from "../../../constants/colors";
 import { RADIUS, SPACING } from "../../../constants/spacing";
 import { useTheme, useThemedStyles } from "../../../providers/ThemeProvider";
-import AppText from "../../../components/Text/AppText";
-
-const formatSwissTime = (time: string): string => {
-    const parts = time.split(":");
-    if (parts.length < 2) return time;
-    return `${parts[0].padStart(2, "0")}:${parts[1]}`;
-};
-
-const toMinutes = (time: string): number => {
-    const [h, m] = time.split(":").map(Number);
-    return (h || 0) * 60 + (m || 0);
-};
-
-const { width: SCREEN_W } = Dimensions.get("window");
-const ARTWORK_SIZE = SCREEN_W - 88;
-const SCRUBBER_DOT = 12;
 
 interface LiveProgramCardProps {
     banner: string | undefined;
     programName: string;
     hostName?: string;
+    programDescription?: string;
+    programLabel?: string;
+    screenGradient?: readonly [string, string, string];
     startTime: string;
     endTime: string;
-    minutesLeft: number;
     isPlaying?: boolean;
     isLoading?: boolean;
+    canListen?: boolean;
+    isSpecialShow?: boolean;
     selectedRadio?: "live" | "classic";
     isComingSoon?: boolean;
     onSelectLive?: () => void;
     onSelectClassic?: () => void;
     onListen: () => void;
-    // Optional chrome — all no-ops if omitted, safe to drop in without wiring them up.
     onBack?: () => void;
     isFavorite?: boolean;
     onToggleFavorite?: () => void;
     onShare?: () => void;
-
 }
+
+const formatSwissTime = (time: string) => {
+    const [hours, minutes] = time.split(":");
+    if (hours === undefined || minutes === undefined) return time;
+    return `${hours.padStart(2, "0")}:${minutes}`;
+};
 
 const LiveProgramCard = ({
     banner,
     programName,
     hostName,
+    programDescription,
+    programLabel = "CURRENT PROGRAM",
+    screenGradient,
     startTime,
     endTime,
-    minutesLeft,
     isPlaying = false,
     isLoading = false,
+    canListen = true,
+    isSpecialShow = false,
     selectedRadio = "live",
     isComingSoon = false,
     onSelectLive,
@@ -85,495 +81,550 @@ const LiveProgramCard = ({
 }: LiveProgramCardProps) => {
     const styles = useThemedStyles(createStyles);
     const { isDark, toggleTheme } = useTheme();
-    const themeAnimation = useRef(new Animated.Value(isDark ? 1 : 0)).current;
-    const startMinutes = toMinutes(startTime);
-    const endMinutes = toMinutes(endTime);
-    const programDuration = endMinutes > startMinutes
-        ? endMinutes - startMinutes
-        : endMinutes + 24 * 60 - startMinutes;
-    const progress = programDuration > 0
-        ? Math.max(0, Math.min(100, ((programDuration - minutesLeft) / programDuration) * 100))
-        : 0;
+    const specialPulse = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        Animated.spring(themeAnimation, {
-            toValue: isDark ? 1 : 0,
-            friction: 7,
-            tension: 80,
-            useNativeDriver: true,
-        }).start();
-    }, [isDark, themeAnimation]);
+        if (!isSpecialShow) {
+            specialPulse.setValue(0);
+            return;
+        }
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.headerRow}>
-                <TouchableOpacity activeOpacity={0.7} onPress={onBack} hitSlop={8}>
-                    <ChevronLeft size={20} color={COLORS.textSecondary} />
-                </TouchableOpacity>
-                <View style={styles.brandContainer}>
-                    <Text style={styles.brandLabel}>NOW PLAYING FROM</Text>
-                    <AppText
-                        variant="heading"
-                        color={COLORS.text}
-                        weight="700"
-                        style={styles.brandTitle}
-                    >
-                        Thaalam Broadcasting
-                    </AppText>
-                </View>
+        const pulse = Animated.loop(
+            Animated.sequence([
+                Animated.timing(specialPulse, {
+                    toValue: 1,
+                    duration: 900,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(specialPulse, {
+                    toValue: 0,
+                    duration: 900,
+                    useNativeDriver: true,
+                }),
+            ]),
+        );
+        pulse.start();
+        return () => pulse.stop();
+    }, [isSpecialShow, specialPulse]);
 
+    const artworkActions = onToggleFavorite || onShare ? (
+        <View style={styles.artworkActions}>
+            {onToggleFavorite && (
                 <TouchableOpacity
-                    activeOpacity={0.75}
-                    style={[styles.themeButton]}
-                    onPress={() => void toggleTheme()}
-                    hitSlop={8}
                     accessibilityRole="button"
-                    accessibilityLabel={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                    accessibilityLabel={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                    style={styles.artworkActionButton}
+                    onPress={onToggleFavorite}
+                    activeOpacity={0.75}
                 >
-                    <Animated.View
-                        style={styles.themeIcon}
-                    >
-                        <Animated.View
-                            style={{
-                                position: "absolute",
-                                opacity: themeAnimation.interpolate({
-                                    inputRange: [0, 0.45, 1],
-                                    outputRange: [1, 0, 0],
-                                }),
-                                transform: [{
-                                    scale: themeAnimation.interpolate({
-                                        inputRange: [0, 0.5, 1],
-                                        outputRange: [1, 0.7, 1],
-                                    }),
-                                }],
-                            }}
-                        >
-                            <MoonStar size={24} color={COLORS.black} />
-                        </Animated.View>
-                        <Animated.View
-                            style={{
-                                position: "absolute",
-                                opacity: themeAnimation.interpolate({
-                                    inputRange: [0, 0.55, 1],
-                                    outputRange: [0, 0, 1],
-                                }),
-                                transform: [{
-                                    scale: themeAnimation.interpolate({
-                                        inputRange: [0, 0.5, 1],
-                                        outputRange: [1, 0.7, 1],
-                                    }),
-                                }],
-                            }}
-                        >
-                            <Sun size={24} color={COLORS.white} />
-                        </Animated.View>
-                    </Animated.View>
+                    <Heart
+                        size={18}
+                        color={isFavorite ? COLORS.primaryBright : COLORS.white}
+                        fill={isFavorite ? COLORS.primaryBright : "transparent"}
+                    />
                 </TouchableOpacity>
-            </View>
-
-            <View style={styles.artworkWrap}>
-                <ImageBackground
-                    source={{ uri: banner }}
-                    style={styles.artwork}
-                    imageStyle={styles.artworkImage}
+            )}
+            {onShare && (
+                <TouchableOpacity
+                    accessibilityRole="button"
+                    accessibilityLabel="Share live radio"
+                    style={styles.artworkActionButton}
+                    onPress={onShare}
+                    activeOpacity={0.75}
                 >
-                    <LinearGradient
-                        colors={["transparent", "rgba(0,0,0,0.45)"]}
-                        style={styles.artworkShade}
-                    />
-                </ImageBackground>
-            </View>
-
-
-            <View style={styles.toggleContainer}>
-                <View style={styles.toggleRow}>
-                    <View
-                        style={[
-                            styles.toggleIndicator,
-                            selectedRadio === "classic" && styles.toggleIndicatorClassic,
-                        ]}
-                    />
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        style={styles.toggleButton}
-                        onPress={onSelectLive}
-                    >
-                        <Radio color={selectedRadio === "classic" ? COLORS.backgroundSecondary : COLORS.primary} />
-                        <AppText > Live</AppText>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        style={styles.toggleButton}
-                        onPress={onSelectClassic}
-                    >
-                        <Image
-                            source={require("../../../assets/images/onboarding/radio.png")}
-                            style={[
-                                styles.toggleLogoClassic,
-                                selectedRadio === "classic" ? styles.toggleLogoActive : styles.toggleLogoInactive,
-                            ]}
-                            resizeMode="contain"
-                        />
-                        <AppText> Classic</AppText>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            {isComingSoon ? (
-                <View style={styles.comingSoonSection}>
-                    <View style={styles.comingSoonIcon}>
-                        <RadioTowerIcon size={28} color={COLORS.primary} />
-                    </View>
-                    <Text style={styles.comingSoonEyebrow}>CLASSIC RADIO</Text>
-                    <Text style={styles.comingSoonTitle}>Coming Soon</Text>
-
-                </View>
-            ) : (
-                <>
-                    <View style={styles.infoSection}>
-                        <AppText
-                            variant="title"
-                            weight="700"
-                            color={COLORS.text}
-                            style={styles.programName}
-                        >
-                            {programName}
-                        </AppText>
-                        {/* {hostName ? <AppText
-                            variant="subHeading"
-                            color={COLORS.textMuted}
-                            style={styles.hostName}
-                        >{hostName}
-                        </AppText>
-                            : null} */}
-                    </View>
-
-                    <View style={styles.scrubberSection}>
-                        <View style={styles.scrubberTrack}>
-                            <View style={[styles.scrubberFill, { width: `${progress}%` }]} />
-                            <View
-                                style={[
-                                    styles.scrubberDot,
-                                    { left: `${progress}%` },
-                                ]}
-                            />
-                        </View>
-                        <View style={styles.timeRow}>
-                            <Text style={styles.timeLabel}>{formatSwissTime(startTime)}</Text>
-                            <Text style={styles.minutesLeft}>{minutesLeft} min left</Text>
-                            <Text style={styles.timeLabel}>{formatSwissTime(endTime)}</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.controlsRow}>
-                        <TouchableOpacity activeOpacity={0.7} onPress={onToggleFavorite} hitSlop={8}>
-                            <Heart
-                                size={22}
-                                color={isFavorite ? COLORS.primary : COLORS.textSecondary}
-                                fill={isFavorite ? COLORS.primary : "transparent"}
-                            />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            activeOpacity={0.85}
-                            style={styles.playButton}
-                            onPress={onListen}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
-                                <ActivityIndicator size="small" color={COLORS.controlIcon} />
-                            ) : isPlaying ? (
-                                <Pause size={24} color={COLORS.controlIcon} fill={COLORS.controlIcon} />
-                            ) : (
-                                <Play size={24} color={COLORS.controlIcon} fill={COLORS.controlIcon} />
-                            )}
-                        </TouchableOpacity>
-
-                        <TouchableOpacity activeOpacity={0.7} onPress={onShare} hitSlop={8}>
-                            <Share2 size={20} color={COLORS.textSecondary} />
-                        </TouchableOpacity>
-                    </View>
-                </>
+                    <Share2 size={18} color={COLORS.white} />
+                </TouchableOpacity>
             )}
         </View>
+    ) : null;
+
+    return (
+
+        <LinearGradient
+            colors={screenGradient ?? GRADIENTS.screen}
+            style={styles.gradient}
+        >
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    {onBack ? (
+                        <TouchableOpacity
+                            accessibilityRole="button"
+                            accessibilityLabel="Back"
+                            style={styles.headerButton}
+                            onPress={onBack}
+                            activeOpacity={0.75}
+                        >
+                            <ChevronLeft size={20} color={COLORS.textSecondary} />
+                        </TouchableOpacity>
+                    ) : (
+                        <View style={styles.headerButton} />
+                    )}
+
+                    <View style={styles.brand}>
+                        <Text style={styles.brandEyebrow}>NOW PLAYING FROM</Text>
+                        <Text style={styles.brandTitle}>Thaalam Broadcasting</Text>
+                    </View>
+
+                    <TouchableOpacity
+                        accessibilityRole="button"
+                        accessibilityLabel={isDark ? "Switch to light mode" : "Switch to dark mode"}
+                        style={styles.headerButton}
+                        onPress={() => void toggleTheme()}
+                        activeOpacity={0.75}
+                    >
+                        {isDark ? (
+                            <Sun size={19} color={COLORS.gold} />
+                        ) : (
+                            <MoonStar size={19} color={COLORS.textSecondary} />
+                        )}
+                    </TouchableOpacity>
+                </View>
+
+                <View style={styles.radioToggle}>
+                    <TouchableOpacity
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: selectedRadio === "live" }}
+                        style={styles.radioOption}
+                        onPress={onSelectLive}
+                        activeOpacity={0.7}
+                    >
+                        <View style={styles.radioOptionContent}>
+                            <Radio
+                                size={17}
+                                color={selectedRadio === "live" ? COLORS.text : COLORS.textMuted}
+                            />
+                            <Text
+                                style={[
+                                    styles.radioOptionText,
+                                    selectedRadio === "live" && styles.radioOptionTextSelected,
+                                ]}
+                            >
+                                Live
+                            </Text>
+                        </View>
+
+                        {selectedRadio === "live" && (
+                            <View style={styles.selectionDot} />
+                        )}
+                    </TouchableOpacity>
+
+                    <View style={styles.radioDivider} />
+
+                    <TouchableOpacity
+                        accessibilityRole="button"
+                        accessibilityState={{ selected: selectedRadio === "classic" }}
+                        style={styles.radioOption}
+                        onPress={onSelectClassic}
+                        activeOpacity={0.7}
+                    >
+                        <View style={styles.radioOptionContent}>
+                            <RadioTowerIcon
+                                size={17}
+                                color={selectedRadio === "classic" ? COLORS.text : COLORS.textMuted}
+                            />
+                            <Text
+                                style={[
+                                    styles.radioOptionText,
+                                    selectedRadio === "classic" && styles.radioOptionTextSelected,
+                                ]}
+                            >
+                                Classic
+                            </Text>
+                        </View>
+
+                        {selectedRadio === "classic" && (
+                            <View style={styles.selectionDot} />
+                        )}
+                    </TouchableOpacity>
+                </View>
+                {isComingSoon ? (
+                    <View style={styles.comingSoonCard}>
+                        <View style={styles.comingSoonIcon}>
+                            <RadioTowerIcon size={24} color={COLORS.primary} />
+                        </View>
+                        <View style={styles.comingSoonCopy}>
+                            <Text style={styles.sectionEyebrow}>CLASSIC RADIO</Text>
+                            <AppText variant="subHeading" weight="700" color={COLORS.text}>
+                                Coming soon
+                            </AppText>
+                            <AppText variant="small" color={COLORS.textSecondary}>
+                                We're preparing another way to listen.
+                            </AppText>
+                        </View>
+                    </View>
+                ) : (
+                    <>
+                        {banner ? (
+                            <ImageBackground
+                                source={{ uri: banner }}
+                                style={styles.artwork}
+                                imageStyle={styles.artworkImage}
+                                resizeMode="cover"
+                            >
+
+                                <View style={styles.liveBadge}>
+                                    <View style={styles.liveDot} />
+                                    <Text style={styles.liveBadgeText}>ON AIR</Text>
+                                </View>
+                                {artworkActions}
+                            </ImageBackground>
+                        ) : (
+                            <View style={[styles.artwork, styles.artworkFallback]}>
+                                <View style={styles.liveBadge}>
+                                    <View style={styles.liveDot} />
+                                    <Text style={styles.liveBadgeText}>ON AIR</Text>
+                                </View>
+                                <View style={styles.artworkFallbackCenter}>
+                                    <Radio size={42} color={COLORS.primary} />
+                                    <Text style={styles.fallbackText}>Thaalam Live</Text>
+                                </View>
+                                {artworkActions}
+                            </View>
+                        )}
+
+                        <View style={styles.programInfo}>
+                            <View style={styles.programTitleBlock}>
+                                <Text style={styles.sectionEyebrow}>{programLabel}</Text>
+                                <AppText
+                                    variant="heading"
+                                    weight="700"
+                                    color={COLORS.text}
+                                    numberOfLines={2}
+                                    style={styles.programName}
+                                >
+                                    {programName}
+                                </AppText>
+                                {hostName ? (
+                                    <AppText variant="body" color={COLORS.textSecondary}>
+                                        with {hostName}
+                                    </AppText>
+                                ) : null}
+                                {programDescription ? (
+                                    <AppText
+                                        variant="small"
+                                        color={COLORS.textSecondary}
+                                        numberOfLines={3}
+                                        style={styles.programDescription}
+                                    >
+                                        {programDescription}
+                                    </AppText>
+                                ) : null}
+                            </View>
+                            <View style={styles.playButtonWrap}>
+                                {isSpecialShow && (
+                                    <Animated.View
+                                        pointerEvents="none"
+                                        style={[
+                                            styles.playButtonHalo,
+                                            {
+                                                opacity: specialPulse.interpolate({
+                                                    inputRange: [0, 1],
+                                                    outputRange: [0.5, 0],
+                                                }),
+                                                transform: [
+                                                    {
+                                                        scale: specialPulse.interpolate({
+                                                            inputRange: [0, 1],
+                                                            outputRange: [0.9, 1.55],
+                                                        }),
+                                                    },
+                                                ],
+                                            },
+                                        ]}
+                                    />
+                                )}
+                                <TouchableOpacity
+                                    accessibilityRole="button"
+                                    accessibilityLabel={
+                                        isLoading
+                                            ? "Connecting to live radio"
+                                            : isPlaying
+                                                ? "Pause live radio"
+                                                : "Play live radio"
+                                    }
+                                    accessibilityState={{ disabled: isLoading || !canListen }}
+                                    style={[
+                                        styles.playButton,
+                                        !canListen && styles.playButtonDisabled,
+                                    ]}
+                                    onPress={onListen}
+                                    disabled={isLoading || !canListen}
+                                    activeOpacity={0.85}
+                                >
+                                    <LinearGradient
+                                        colors={GRADIENTS.primary}
+                                        style={styles.playButtonGradient}
+                                    >
+                                        {isLoading ? (
+                                            <ActivityIndicator size="small" color={COLORS.white} />
+                                        ) : isPlaying ? (
+                                            <Pause size={23} color={COLORS.white} fill={COLORS.white} />
+                                        ) : (
+                                            <Play size={23} color={COLORS.white} fill={COLORS.white} />
+                                        )}
+                                    </LinearGradient>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+
+                        <View style={styles.schedule}>
+                            <View style={styles.scheduleTimes}>
+                                <Text style={styles.scheduleTime}>{formatSwissTime(startTime)}</Text>
+                                <Text style={styles.scheduleTime}>{formatSwissTime(endTime)}</Text>
+                            </View>
+                        </View>
+
+                    </>
+                )}
+            </View>
+        </LinearGradient>
+
     );
 };
 
 export default LiveProgramCard;
 
-const createStyles = () => StyleSheet.create({
-    container: {
-        backgroundColor: "transparent",
-    },
+const createStyles = () =>
+    StyleSheet.create({
+        container: {
+            paddingTop: SPACING.xl,
+            marginTop: SPACING.lg,
+            marginHorizontal: SPACING.lg,
+            paddingBottom: SPACING.lg,
+            backgroundColor: "transparent",
+        },
+        gradient: {
+            alignSelf: "stretch",
+        },
+        header: {
+            minHeight: 68,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: SPACING.md,
+        },
+        headerButton: {
+            width: 40,
+            height: 40,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: RADIUS.pill,
+        },
+        brand: {
+            alignItems: "center",
+        },
+        brandEyebrow: {
+            color: COLORS.primaryText,
+            fontFamily: "InclusiveSans-SemiBold",
+            fontSize: 9,
+            letterSpacing: 1.4,
+        },
+        brandTitle: {
+            marginTop: 1,
+            color: COLORS.primaryText,
+            fontFamily: "InclusiveSans-SemiBold",
+            fontSize: 18,
+            fontWeight: "700",
+        },
+        radioToggle: {
+            flexDirection: "row",
+            alignItems: "center",
+            marginHorizontal: SPACING.md,
+            marginBottom: SPACING.lg,
+            paddingVertical: 5,
+            borderRadius: 12,
+            backgroundColor: COLORS.glass,
+            borderWidth: 1,
+            borderColor: COLORS.glassBorder,
+        },
 
-    glow: {
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        height: 340,
-    },
+        radioOption: {
+            flex: 1,
+            minHeight: 42,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+        },
 
-    headerRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingHorizontal: SPACING.xl,
-        paddingTop: SPACING.lg,
-    },
+        radioOptionContent: {
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
+        },
 
-    headerLabel: {
-        color: COLORS.textMuted,
-        fontSize: 11,
-        fontFamily: "InclusiveSans",
-        letterSpacing: 0.6,
-        textTransform: "uppercase",
-    },
+        radioOptionText: {
+            fontSize: 14,
+            fontFamily: "InclusiveSans-Medium",
+            color: COLORS.textMuted,
+        },
 
-    artworkWrap: {
-        alignItems: "center",
-        paddingTop: 28,
-        paddingHorizontal: SPACING.xl,
-    },
+        radioOptionTextSelected: {
+            color: COLORS.text,
+            fontFamily: "InclusiveSans-Bold",
+        },
 
-    artwork: {
-        width: ARTWORK_SIZE,
-        height: ARTWORK_SIZE,
-        borderRadius: RADIUS.xl,
-        overflow: "hidden",
-    },
+        selectionDot: {
+            width: 5,
+            height: 5,
+            borderRadius: 3,
+            backgroundColor: COLORS.text,
+            marginLeft: 1,
+        },
 
-    artworkImage: {
-        borderRadius: RADIUS.xl,
-    },
-
-    artworkShade: {
-        position: "absolute",
-        left: 0,
-        right: 0,
-        bottom: 0,
-        height: "60%",
-    },
-
-    brandContainer: {
-        alignItems: "center",
-    },
-
-    brandLabel: {
-        fontSize: 11,
-        color: COLORS.textMuted,
-        letterSpacing: 2,
-        textTransform: "uppercase",
-        fontFamily: "InclusiveSans",
-    },
-
-    brandTitle: {
-        fontSize: 24,
-    },
-
-    themeButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-
-    themeIcon: {
-        width: 20,
-        height: 20,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-
-    infoSection: {
-        paddingTop: 22,
-        paddingHorizontal: SPACING.xl,
-        alignItems: "center",
-    },
-
-    programName: {
-        fontSize: 21,
-        fontFamily: "InclusiveSans",
-        lineHeight: 26,
-        textAlign: "center",
-        marginBottom: 6,
-    },
-
-    hostName: {
-        fontSize: 13,
-        fontFamily: "InclusiveSans",
-    },
-
-    comingSoonSection: {
-        alignItems: "center",
-        marginTop: 28,
-        marginHorizontal: SPACING.xl,
-        paddingHorizontal: 28,
-        paddingVertical: 30,
-    },
-
-    comingSoonIcon: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "rgba(228, 30, 38, 0.14)",
-    },
-
-    comingSoonEyebrow: {
-        marginTop: 18,
-        color: COLORS.primaryBright,
-        fontSize: 11,
-        fontFamily: "InclusiveSans",
-        fontWeight: "700",
-        letterSpacing: 1.6,
-    },
-
-    comingSoonTitle: {
-        color: COLORS.text,
-        marginTop: 6,
-        fontSize: 24,
-        fontFamily: "InclusiveSans",
-        fontWeight: "800",
-    },
-
-    comingSoonText: {
-        marginTop: 8,
-        color: COLORS.textMuted,
-        fontSize: 14,
-        fontFamily: "InclusiveSans",
-        textAlign: "center",
-        lineHeight: 21,
-    },
-
-    scrubberSection: {
-        paddingTop: 24,
-        paddingHorizontal: SPACING.xl,
-    },
-
-    scrubberTrack: {
-        height: 4,
-        backgroundColor: COLORS.glassStrong,
-        borderRadius: 2,
-        position: "relative",
-        justifyContent: "center",
-    },
-
-    scrubberFill: {
-        height: 4,
-        backgroundColor: COLORS.text,
-        borderRadius: 2,
-    },
-
-    scrubberDot: {
-        position: "absolute",
-        top: -4,
-        marginLeft: -SCRUBBER_DOT / 2,
-        width: SCRUBBER_DOT,
-        height: SCRUBBER_DOT,
-        borderRadius: SCRUBBER_DOT / 2,
-        backgroundColor: COLORS.text,
-    },
-
-    timeRow: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: 8,
-    },
-
-    timeLabel: {
-        color: COLORS.textMuted,
-        fontSize: 11,
-        fontFamily: "InclusiveSans",
-    },
-
-    minutesLeft: {
-        color: COLORS.primaryBright,
-        fontSize: 11,
-        fontFamily: "InclusiveSans",
-        fontWeight: "600",
-    },
-
-    controlsRow: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        gap: 44,
-        paddingTop: 26,
-        paddingHorizontal: SPACING.xl,
-    },
-
-    playButton: {
-        width: 64,
-        height: 64,
-        borderRadius: 32,
-        backgroundColor: COLORS.white,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-
-    toggleContainer: {
-        marginTop: 26,
-        marginHorizontal: SPACING.xl,
-        backgroundColor: COLORS.glass,
-        borderRadius: RADIUS.lg,
-        borderWidth: 1,
-        borderColor: COLORS.glassBorder,
-        padding: 2,
-    },
-
-    toggleRow: {
-        flexDirection: "row",
-        position: "relative",
-    },
-
-    toggleIndicator: {
-        position: "absolute",
-        top: 2,
-        bottom: 2,
-        left: 2,
-        width: "50%",
-        backgroundColor: COLORS.surface,
-        borderRadius: RADIUS.md,
-        borderWidth: 1,
-        borderColor: COLORS.glassBorder,
-        shadowColor: "#000",
-        shadowOpacity: 0.12,
-        shadowRadius: 6,
-        shadowOffset: { width: 0, height: 2 },
-        elevation: 3,
-    },
-
-    toggleIndicatorClassic: {
-        left: "50%",
-    },
-
-    toggleButton: {
-        flex: 1,
-        flexDirection: "row",
-        gap: 2,
-        alignItems: "center",
-        justifyContent: "center",
-        paddingVertical: 5,
-    },
-
-    toggleLogoThaalam: {
-        width: 90,
-        height: 28,
-    },
-
-    toggleLogoClassic: {
-        width: 36,
-        height: 36,
-    },
-
-    toggleLogoActive: {
-        opacity: 1,
-    },
-
-    toggleLogoInactive: {
-        opacity: 0.3,
-    },
-});
+        radioDivider: {
+            width: 1,
+            height: 22,
+            backgroundColor: COLORS.glassBorder,
+        },
+        artwork: {
+            aspectRatio: 1,
+            marginHorizontal: 0,
+            overflow: "hidden",
+            justifyContent: "space-between",
+            padding: SPACING.md,
+            borderRadius: RADIUS.lg,
+            backgroundColor: COLORS.backgroundSecondary,
+        },
+        artworkImage: {
+            borderRadius: RADIUS.lg,
+        },
+        artworkFallback: {
+            alignItems: "stretch",
+            justifyContent: "space-between",
+        },
+        artworkFallbackCenter: {
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            gap: SPACING.sm,
+        },
+        fallbackText: {
+            color: COLORS.textSecondary,
+            fontFamily: "InclusiveSans-SemiBold",
+            fontSize: 13,
+        },
+        artworkActions: {
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            gap: SPACING.sm,
+        },
+        artworkActionButton: {
+            width: 40,
+            height: 40,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: RADIUS.pill,
+            borderWidth: 1,
+            borderColor: "rgba(255,255,255,0.22)",
+            backgroundColor: "rgba(0,0,0,0.52)",
+        },
+        liveBadge: {
+            alignSelf: "flex-start",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 6,
+            paddingHorizontal: 10,
+            paddingVertical: 6,
+            borderRadius: RADIUS.pill,
+            backgroundColor: "rgba(0,0,0,0.55)",
+        },
+        liveDot: {
+            width: 6,
+            height: 6,
+            borderRadius: RADIUS.pill,
+            backgroundColor: COLORS.primaryBright,
+        },
+        liveBadgeText: {
+            color: COLORS.white,
+            fontFamily: "InclusiveSans-Bold",
+            fontSize: 9,
+            letterSpacing: 0.8,
+        },
+        programInfo: {
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: SPACING.md,
+            paddingHorizontal: SPACING.lg,
+            paddingTop: SPACING.lg,
+        },
+        programTitleBlock: {
+            flex: 1,
+            gap: SPACING.xs,
+        },
+        sectionEyebrow: {
+            color: COLORS.primary,
+            fontFamily: "InclusiveSans-Bold",
+            fontSize: 9,
+            letterSpacing: 1.1,
+        },
+        programName: {
+            lineHeight: 28,
+        },
+        programDescription: {
+            marginTop: SPACING.xs,
+        },
+        playButtonWrap: {
+            width: 58,
+            height: 58,
+            alignItems: "center",
+            justifyContent: "center",
+        },
+        playButtonHalo: {
+            position: "absolute",
+            width: 58,
+            height: 58,
+            borderRadius: RADIUS.pill,
+            borderWidth: 2,
+            borderColor: COLORS.primary,
+        },
+        schedule: {
+            paddingHorizontal: SPACING.lg,
+            paddingTop: SPACING.md,
+        },
+        scheduleTimes: {
+            flexDirection: "row",
+            justifyContent: "space-between",
+        },
+        scheduleTime: {
+            color: COLORS.textMuted,
+            fontFamily: "InclusiveSans-Medium",
+            fontSize: 11,
+        },
+        playButton: {
+            width: 58,
+            height: 58,
+            overflow: "hidden",
+            borderRadius: RADIUS.pill,
+            elevation: 3,
+            shadowColor: COLORS.primary,
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.25,
+            shadowRadius: 8,
+        },
+        playButtonDisabled: {
+            opacity: 0.55,
+        },
+        playButtonGradient: {
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+        },
+        comingSoonCard: {
+            minHeight: 220,
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingVertical: SPACING.xl,
+            gap: SPACING.md,
+        },
+        comingSoonIcon: {
+            alignItems: "center",
+            justifyContent: "center",
+        },
+        comingSoonCopy: {
+            alignItems: "center",
+            gap: SPACING.xs,
+        },
+    });

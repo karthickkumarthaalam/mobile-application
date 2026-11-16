@@ -21,6 +21,7 @@ import { useThemedStyles } from "../../providers/ThemeProvider";
 import { useNotification } from "../../providers/NotificationProvider";
 import { enquiry, advertise } from "../../api/contact.api";
 import type { EnquiryRequest, AdvertiseRequest } from "../../types/contact";
+import ScreenHeader from "../../components/Layout/ScreenHeader";
 
 const CONTACT_ITEMS = [
     {
@@ -142,12 +143,7 @@ export default function ContactScreen() {
         <LinearGradient colors={GRADIENTS.screen} style={styles.gradient}>
             <SafeAreaView style={styles.safeArea} edges={["top"]}>
 
-                <View style={styles.header}>
-                    <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
-                        <ChevronLeft size={22} color={COLORS.text} strokeWidth={2} />
-                    </TouchableOpacity>
-
-                </View>
+                <ScreenHeader title="Contact Us" subtitle="Feel free to contact us anytime and anywhere" />
 
                 <ScrollView
                     contentContainerStyle={styles.content}
@@ -162,7 +158,7 @@ export default function ContactScreen() {
                         <AppText variant="heading" weight="700" align="center" style={styles.heroTitle}>
                             Contact Information
                         </AppText>
-                        <AppText variant="body" align="center" color={COLORS.textSecondary} style={styles.heroSub}>
+                        <AppText variant="caption" align="center" color={COLORS.primaryText} style={styles.heroSub}>
                             We're available to help you anytime
                         </AppText>
                     </View>
@@ -176,7 +172,7 @@ export default function ContactScreen() {
                                     {label}
                                 </AppText>
                                 {lines.map((line) => (
-                                    <AppText key={line} variant="body" weight="600" style={styles.cardLine}>
+                                    <AppText key={line} variant="caption" weight="500" style={styles.cardLine}>
                                         {line}
                                     </AppText>
                                 ))}
@@ -430,23 +426,6 @@ const createStyles = () => StyleSheet.create({
     gradient: { flex: 1 },
     safeArea: { flex: 1 },
 
-    header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingHorizontal: SPACING.lg,
-        paddingVertical: SPACING.md,
-    },
-    backBtn: {
-        width: 38,
-        height: 38,
-        borderRadius: RADIUS.md,
-        backgroundColor: COLORS.glass,
-        borderWidth: 1,
-        borderColor: COLORS.glassBorder,
-        alignItems: "center",
-        justifyContent: "center",
-    },
 
     content: {
         paddingHorizontal: SPACING.lg,
@@ -474,7 +453,7 @@ const createStyles = () => StyleSheet.create({
     card: {
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: COLORS.surface,
+        backgroundColor: COLORS.backgroundSecondary,
         borderRadius: RADIUS.lg,
         borderWidth: 1,
         borderColor: COLORS.glassBorder,
@@ -518,7 +497,7 @@ const createStyles = () => StyleSheet.create({
         borderRadius: RADIUS.xl,
         borderWidth: 1,
         borderColor: COLORS.glassBorder,
-        backgroundColor: COLORS.surface,
+        backgroundColor: COLORS.backgroundSecondary,
         overflow: "hidden",
     },
     toggleCardEnquiryActive: {
@@ -570,7 +549,7 @@ const createStyles = () => StyleSheet.create({
 
     // Form
     formCard: {
-        backgroundColor: COLORS.surface,
+        backgroundColor: COLORS.backgroundSecondary,
         borderRadius: RADIUS.xl,
         borderWidth: 1,
         borderColor: COLORS.glassBorder,

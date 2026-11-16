@@ -9,7 +9,7 @@ import PodcastScreen from "../screens/Podcast/PodcastScreen";
 import PackageScreen from "../screens/Package/PackageScreen";
 import ProfileScreen from "../screens/Profile/ProfileScreen";
 import { COLORS } from "../constants/colors";
-import RJsScreen from "../screens/RJs/RJsScreen";
+import RJsFeatureScreen from "../screens/RJs/RJsFeatureScreen";
 
 
 const Tab = createBottomTabNavigator();
@@ -31,30 +31,11 @@ export default function TabNavigator() {
             }}
         >
 
-            <Tab.Screen
-                name="Podcast"
-                component={PodcastScreen}
-            />
-            <Tab.Screen
-                name="Rjs"
-                component={RJsScreen}
-            />
-            <Tab.Screen
-                name="Main"
-                component={HomeScreen}
-            />
-            {/* <Tab.Screen
-                name="Package"
-                component={PackageScreen}
-            /> */}
-            <Tab.Screen
-                name="News"
-                component={NewsScreen}
-            />
-            <Tab.Screen
-                name="Profile"
-                component={ProfileScreen}
-            />
+            <Tab.Screen name="Main" component={HomeScreen} />
+            <Tab.Screen name="Podcast" component={PodcastScreen} />
+            <Tab.Screen name="Rjs" component={RJsFeatureScreen} />
+            <Tab.Screen name="News" component={NewsScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
         </Tab.Navigator>
     );
 }

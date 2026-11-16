@@ -1,89 +1,113 @@
+
+import React from "react";
 import { StyleSheet, View } from "react-native";
+
 import SkeletonBlock from "../../Home/components/SkeletonBlock";
+import { SPACING } from "../../../constants/spacing";
 import { useThemedStyles } from "../../../providers/ThemeProvider";
 
 export default function RJSkeleton() {
     const styles = useThemedStyles(createStyles);
+
     return (
-        <View style={styles.card}>
-
-            <SkeletonBlock
-                width="100%"
-                height={240}
-                borderRadius={20}
-            />
-
-            <View style={styles.content} >
-                <SkeletonBlock
-                    width={90}
-                    height={22}
-                    borderRadius={12}
-                />
-
-                {/* Name */}
-                <SkeletonBlock
-                    width="60%"
-                    height={26}
-                    borderRadius={8}
-                />
-
-                {/* Description */}
+        <View style={styles.container}>
+            {/* Portrait */}
+            <View style={styles.portrait}>
                 <SkeletonBlock
                     width="100%"
-                    height={14}
-                    borderRadius={8}
+                    height={380}
+                    borderRadius={24}
+                    style={styles.portraitPlaceholder}
                 />
 
-                <SkeletonBlock
-                    width="85%"
-                    height={14}
-                    borderRadius={8}
-                />
+                <View style={styles.portraitContent}>
+                    <SkeletonBlock
+                        width={90}
+                        height={12}
+                        borderRadius={6}
+                    />
 
-                {/* Show Chips */}
-                <View style={styles.chips}>
-                    <View style={styles.chip}>
-                        <SkeletonBlock
-                            width="100%"
-                            height={58}
-                            borderRadius={14}
-                        />
-                    </View>
+                    <SkeletonBlock
+                        width="65%"
+                        height={30}
+                        borderRadius={8}
+                    />
 
-                    <View style={styles.chip}>
-                        <SkeletonBlock
-                            width="100%"
-                            height={58}
-                            borderRadius={14}
-                        />
-                    </View>
+                    <SkeletonBlock
+                        width={38}
+                        height={3}
+                        borderRadius={2}
+                    />
                 </View>
-
-
             </View>
 
+            {/* Description */}
+            <View style={styles.details}>
+                <SkeletonBlock
+                    width={160}
+                    height={12}
+                    borderRadius={6}
+                />
+
+                <View style={styles.description}>
+                    <SkeletonBlock
+                        width="100%"
+                        height={13}
+                        borderRadius={6}
+                    />
+
+                    <SkeletonBlock
+                        width="90%"
+                        height={13}
+                        borderRadius={6}
+                    />
+
+                    <SkeletonBlock
+                        width="65%"
+                        height={13}
+                        borderRadius={6}
+                    />
+                </View>
+            </View>
         </View>
     );
 }
 
-const createStyles = () => StyleSheet.create({
-    card: {
-        marginHorizontal: 20,
-        marginTop: 20
-    },
+const createStyles = () =>
+    StyleSheet.create({
+        container: {
+            width: "100%",
+        },
 
-    content: {
-        marginTop: 18,
-        gap: 14
-    },
+        portrait: {
+            marginHorizontal: SPACING.xl,
+            position: "relative",
+            aspectRatio: 0.88,
+            borderRadius: 24,
+            overflow: "hidden",
+        },
 
-    chips: {
-        flexDirection: "row",
-        gap: 12,
-        marginTop: 6
-    },
+        portraitContent: {
+            position: "absolute",
+            bottom: SPACING.xxl,
+            left: SPACING.xl,
+            right: SPACING.xl,
+            gap: SPACING.md,
+        },
 
-    chip: {
-        flex: 1
-    }
-});
+        portraitPlaceholder: {
+            height: "100%",
+        },
+
+        details: {
+            marginHorizontal: SPACING.xl,
+            marginTop: SPACING.lg,
+            padding: SPACING.lg,
+            borderRadius: 20,
+        },
+
+        description: {
+            marginTop: SPACING.md,
+            gap: SPACING.sm,
+        },
+    });

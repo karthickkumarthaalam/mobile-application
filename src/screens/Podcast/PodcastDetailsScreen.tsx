@@ -14,6 +14,7 @@ import PodcastAudioControls from "./components/PodcastAudioControls";
 import PodcastDetailsHero from "./components/PodcastDetailsHero";
 import PodcastDetailsInfo from "./components/PodcastDetailsInfo";
 import PodcastDetailsSkeleton from "./components/PodcastDetailsSkeleton";
+import PodcastComments from "./components/PodcastComments";
 import { useThemedStyles } from "../../providers/ThemeProvider";
 
 type PodcastDetailsRouteParams = {
@@ -127,10 +128,13 @@ export default function PodcastDetailsScreen() {
         <LinearGradient colors={GRADIENTS.screen} style={styles.gradient}>
             <SafeAreaView style={styles.safeArea} edges={["top"]}>
                 <View style={styles.screen} {...swipeResponder.panHandlers}>
-                    <View style={styles.glowTop} />
-                    <View style={styles.glowBottom} />
 
-                    <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+
+                    <ScrollView
+                        contentContainerStyle={styles.content}
+                        showsVerticalScrollIndicator={false}
+                        keyboardShouldPersistTaps="handled"
+                    >
                         <PodcastDetailsHero
                             podcast={podcast}
                             onBack={() => navigation.goBack()}
@@ -160,6 +164,7 @@ export default function PodcastDetailsScreen() {
                         />
 
                         <PodcastDetailsInfo podcast={podcast} />
+                        <PodcastComments podcastId={podcast.id} />
                     </ScrollView>
 
                 </View>

@@ -237,30 +237,28 @@ const createStyles = () => StyleSheet.create({
     },
 
     label: {
-        marginBottom: SPACING.sm,
-        color: COLORS.textSecondary,
+        marginBottom: 6,
+        color: COLORS.text,
+        fontFamily: FONT_FAMILY.medium,
+        fontSize: 12,
+        letterSpacing: 0.1,
     },
 
     inputContainer: {
-        minHeight: 56,
-
+        height: 48,
         paddingHorizontal: SPACING.lg,
-
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-
-        backgroundColor: COLORS.inputBackground,
-
+        backgroundColor: COLORS.backgroundSecondary,
         borderWidth: 1,
         borderColor: COLORS.inputBorder,
-
-        borderRadius: RADIUS.lg,
+        borderRadius: RADIUS.sm,
     },
 
     focused: {
         borderColor: COLORS.inputFocus,
-        backgroundColor: COLORS.glassStrong,
+        backgroundColor: COLORS.backgroundDeep,
     },
 
     disabled: {

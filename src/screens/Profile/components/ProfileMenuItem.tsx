@@ -43,18 +43,18 @@ export default function ProfileMenuItem({
             <View style={styles.left}>
                 <View >
                     <Icon
-                        size={20}
+                        size={16}
                         color={
                             destructive
                                 ? COLORS.error
-                                : COLORS.primary
+                                : COLORS.primaryText
                         } />
                 </View>
 
-                <AppText weight="600" color={
+                <AppText weight="600" variant="caption" color={
                     destructive
                         ? COLORS.error
-                        : COLORS.textSecondary
+                        : COLORS.primaryText
                 }>
                     {title}
                 </AppText>

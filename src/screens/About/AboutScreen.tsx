@@ -1,14 +1,15 @@
 import React from "react";
-import { ScrollView, StyleSheet, View, Image, TouchableOpacity } from "react-native";
+import { ScrollView, StyleSheet, View, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
-import { ChevronLeft, Radio, Music2, Mic2, Star, Calendar } from "lucide-react-native";
+import { Radio, Music2, Mic2, Star, Calendar } from "lucide-react-native";
 
 import AppText from "../../components/Text/AppText";
 import { COLORS, GRADIENTS } from "../../constants/colors";
 import { SPACING, RADIUS } from "../../constants/spacing";
 import { useThemedStyles } from "../../providers/ThemeProvider";
+import ScreenHeader from "../../components/Layout/ScreenHeader";
 
 const STATS = [
     { value: "20+", label: "Years of\nLegacy" },
@@ -53,11 +54,7 @@ export default function AboutScreen() {
         <LinearGradient colors={GRADIENTS.screen} style={styles.gradient}>
             <SafeAreaView style={styles.safeArea} edges={["top"]}>
 
-                <View style={styles.header}>
-                    <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
-                        <ChevronLeft size={22} color={COLORS.text} strokeWidth={2} />
-                    </TouchableOpacity>
-                </View>
+                <ScreenHeader title="About Us" subtitle="Get to know more about us" />
 
                 <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
@@ -71,7 +68,7 @@ export default function AboutScreen() {
                         <AppText variant="heading" weight="700" align="center" style={styles.heroTitle}>
                             Thaalam Media
                         </AppText>
-                        <AppText variant="body" align="center" color={COLORS.textSecondary} style={styles.heroSub}>
+                        <AppText variant="caption" align="center" color={COLORS.primaryText} style={styles.heroSub}>
                             A trailblazing organization with an illustrious 20-year legacy in media. Since our inception in 2002 in Sri Lanka, we have forged an extensive network in the media landscape — becoming more than just a broadcasting entity.
                         </AppText>
                     </View>
@@ -80,10 +77,10 @@ export default function AboutScreen() {
                     <View style={styles.statsRow}>
                         {STATS.map((s) => (
                             <View key={s.label} style={styles.statCard}>
-                                <AppText variant="subHeading" weight="500" color={COLORS.primary} style={styles.statValue}>
+                                <AppText weight="500" color={COLORS.primary} style={styles.statValue}>
                                     {s.value}
                                 </AppText>
-                                <AppText variant="caption" color={COLORS.textMuted} align="center" style={styles.statLabel}>
+                                <AppText variant="small" color={COLORS.textMuted} align="center" style={styles.statLabel}>
                                     {s.label}
                                 </AppText>
                             </View>
@@ -99,7 +96,7 @@ export default function AboutScreen() {
                                     {title}
                                 </AppText>
                             </View>
-                            <AppText variant="body" color={COLORS.textSecondary} style={styles.sectionBody}>
+                            <AppText variant="caption" color={COLORS.primaryText} style={styles.sectionBody}>
                                 {body}
                             </AppText>
                         </View>
@@ -125,24 +122,6 @@ export default function AboutScreen() {
 const createStyles = () => StyleSheet.create({
     gradient: { flex: 1 },
     safeArea: { flex: 1 },
-
-    header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingHorizontal: SPACING.lg,
-        paddingVertical: SPACING.md,
-    },
-    backBtn: {
-        width: 38,
-        height: 38,
-        borderRadius: RADIUS.md,
-        backgroundColor: COLORS.glass,
-        borderWidth: 1,
-        borderColor: COLORS.glassBorder,
-        alignItems: "center",
-        justifyContent: "center",
-    },
 
     content: {
         paddingHorizontal: SPACING.lg,
@@ -175,7 +154,7 @@ const createStyles = () => StyleSheet.create({
     statCard: {
         flex: 1,
         minWidth: "44%",
-        backgroundColor: COLORS.surface,
+        backgroundColor: COLORS.backgroundSecondary,
         borderRadius: RADIUS.lg,
         borderWidth: 1,
         borderColor: COLORS.glassBorder,
@@ -192,7 +171,7 @@ const createStyles = () => StyleSheet.create({
     },
 
     sectionCard: {
-        backgroundColor: COLORS.surface,
+        backgroundColor: COLORS.backgroundSecondary,
         borderRadius: RADIUS.lg,
         borderWidth: 1,
         borderColor: COLORS.glassBorder,
